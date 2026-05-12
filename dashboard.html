@@ -1,0 +1,2029 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Personal Manager Dashboard Prototype</title>
+  <style>
+    :root {
+      --bg: #f6f3ee;
+      --surface: #ffffff;
+      --surface-2: #f1eee8;
+      --ink: #202426;
+      --muted: #65706b;
+      --line: #ded8cd;
+      --teal: #147c72;
+      --teal-soft: #d9efeb;
+      --coral: #cf5b47;
+      --coral-soft: #f8ddd7;
+      --amber: #b47816;
+      --amber-soft: #f7e7c6;
+      --green: #4b7f3a;
+      --green-soft: #dfeeda;
+      --blue: #406a8e;
+      --blue-soft: #dce8f2;
+      --shadow: 0 12px 30px rgba(32, 36, 38, 0.08);
+      --radius: 8px;
+      --sidebar: 260px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: var(--sidebar) minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: #242927;
+      color: #f7f4ee;
+      padding: 20px 16px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 4px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      background: #f2c46f;
+      color: #242927;
+      font-weight: 800;
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 760;
+      line-height: 1.2;
+    }
+
+    .brand-subtitle {
+      color: rgba(247, 244, 238, 0.66);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 6px;
+    }
+
+    .nav button {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: rgba(247, 244, 238, 0.78);
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      min-height: 42px;
+      padding: 8px 10px;
+      border-radius: var(--radius);
+      text-align: left;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+
+    .nav-icon {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .nav-count {
+      font-size: 11px;
+      color: #242927;
+      background: #f2c46f;
+      min-width: 22px;
+      height: 20px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      padding: 0 7px;
+      font-weight: 800;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .small-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .sidebar-footer .small-label {
+      color: rgba(247, 244, 238, 0.6);
+    }
+
+    .sync-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #64c878;
+      box-shadow: 0 0 0 4px rgba(100, 200, 120, 0.14);
+      flex: 0 0 auto;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 20px;
+    }
+
+    .topbar {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 18px;
+      margin-bottom: 20px;
+    }
+
+    .page-kicker {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 30px;
+      line-height: 1.15;
+      font-weight: 820;
+    }
+
+    h2 {
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 790;
+    }
+
+    h3 {
+      font-size: 15px;
+      line-height: 1.25;
+      font-weight: 760;
+    }
+
+    .top-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .btn {
+      min-height: 38px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 12px;
+      font-weight: 720;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      border-color: #bdb5a8;
+      box-shadow: 0 6px 18px rgba(32, 36, 38, 0.08);
+    }
+
+    .btn.primary {
+      background: var(--teal);
+      color: #ffffff;
+      border-color: var(--teal);
+    }
+
+    .btn-icon {
+      width: 17px;
+      height: 17px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.18);
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid.cols-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .grid.cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid.cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.main-layout {
+      grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.8fr);
+      align-items: start;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .card.tight {
+      padding: 13px;
+    }
+
+    .metric {
+      display: grid;
+      gap: 10px;
+      min-height: 138px;
+    }
+
+    .metric-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .metric-value {
+      font-size: 28px;
+      font-weight: 850;
+      line-height: 1;
+      margin-top: 2px;
+    }
+
+    .metric-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .pill {
+      border-radius: 999px;
+      min-height: 24px;
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: 780;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
+    .pill.teal {
+      color: var(--teal);
+      background: var(--teal-soft);
+    }
+
+    .pill.coral {
+      color: var(--coral);
+      background: var(--coral-soft);
+    }
+
+    .pill.amber {
+      color: var(--amber);
+      background: var(--amber-soft);
+    }
+
+    .pill.green {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .pill.blue {
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .progress {
+      height: 9px;
+      background: var(--surface-2);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid #ebe5db;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: var(--teal);
+    }
+
+    .progress.coral span {
+      background: var(--coral);
+    }
+
+    .progress.amber span {
+      background: var(--amber);
+    }
+
+    .progress.green span {
+      background: var(--green);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .section-copy {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      margin-top: 4px;
+    }
+
+    .insight {
+      display: grid;
+      gap: 12px;
+    }
+
+    .insight-primary {
+      background: #26302d;
+      color: #ffffff;
+      border-radius: var(--radius);
+      padding: 15px;
+    }
+
+    .insight-primary p {
+      color: rgba(255, 255, 255, 0.78);
+      line-height: 1.5;
+      margin-top: 7px;
+      font-size: 13px;
+    }
+
+    .ai-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #f2c46f;
+      font-weight: 820;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .row:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .row-title {
+      font-weight: 750;
+      font-size: 14px;
+    }
+
+    .row-meta {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+
+    .row-value {
+      font-weight: 820;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .table th,
+    .table td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    .table th {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 780;
+    }
+
+    .table tbody tr.clickable-row {
+      cursor: pointer;
+    }
+
+    .table tbody tr.clickable-row:hover {
+      background: #fbf7ef;
+    }
+
+    .table td:last-child,
+    .table th:last-child {
+      text-align: right;
+    }
+
+    .chart-bars {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(24px, 1fr));
+      align-items: end;
+      gap: 10px;
+      min-height: 180px;
+      padding-top: 10px;
+    }
+
+    .bar-col {
+      display: grid;
+      gap: 8px;
+      align-items: end;
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 720;
+    }
+
+    .bar {
+      min-height: 28px;
+      border-radius: 6px 6px 2px 2px;
+      background: var(--teal);
+    }
+
+    .bar.coral {
+      background: var(--coral);
+    }
+
+    .bar.amber {
+      background: var(--amber);
+    }
+
+    .ring-wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .ring {
+      width: 118px;
+      height: 118px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(var(--teal) 0 74%, var(--surface-2) 74% 100%);
+      position: relative;
+    }
+
+    .ring:after {
+      content: "";
+      width: 78px;
+      height: 78px;
+      background: var(--surface);
+      border-radius: 50%;
+      position: absolute;
+    }
+
+    .ring span {
+      position: relative;
+      z-index: 1;
+      font-weight: 850;
+      font-size: 21px;
+    }
+
+    .category-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .category-item {
+      display: grid;
+      grid-template-columns: 88px 1fr 46px;
+      gap: 10px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .quick-actions .btn {
+      min-height: 54px;
+      justify-content: flex-start;
+      white-space: normal;
+      text-align: left;
+      line-height: 1.2;
+    }
+
+    .reminder-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fffdfa;
+    }
+
+    .reminder-item.done {
+      opacity: 0.62;
+    }
+
+    .reminder-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .mini-btn {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 7px;
+      min-height: 30px;
+      padding: 5px 8px;
+      font-size: 12px;
+      font-weight: 760;
+    }
+
+    .mini-btn:hover {
+      border-color: #bdb5a8;
+    }
+
+    .memory-card {
+      border-left: 4px solid var(--teal);
+      padding-left: 12px;
+    }
+
+    .settings-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .range-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .segmented {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+    }
+
+    .segmented button {
+      border: 0;
+      min-height: 32px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .segmented button.active {
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: 0 3px 12px rgba(32, 36, 38, 0.08);
+    }
+
+    .custom-dates {
+      display: none;
+      grid-template-columns: repeat(2, minmax(150px, 1fr));
+      gap: 8px;
+      width: min(100%, 380px);
+    }
+
+    .custom-dates.active {
+      display: grid;
+    }
+
+    .goal-card {
+      display: grid;
+      gap: 12px;
+      min-height: 100%;
+    }
+
+    .goal-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 780;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--ink);
+      padding: 8px 10px;
+    }
+
+    .field textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .entry-note {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fffdfa;
+      padding: 12px;
+    }
+
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .toggle {
+      width: 44px;
+      height: 24px;
+      border-radius: 999px;
+      background: var(--line);
+      position: relative;
+      border: 0;
+      padding: 0;
+      flex: 0 0 auto;
+    }
+
+    .toggle:after {
+      content: "";
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #ffffff;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      transition: transform 0.18s ease;
+    }
+
+    .toggle.on {
+      background: var(--teal);
+    }
+
+    .toggle.on:after {
+      transform: translateX(20px);
+    }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 20;
+      background: #242927;
+      color: #ffffff;
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      box-shadow: var(--shadow);
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.2s ease;
+      max-width: 320px;
+      font-size: 13px;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .dialog-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(24, 28, 27, 0.54);
+    }
+
+    .dialog-backdrop.open {
+      display: flex;
+    }
+
+    .dialog {
+      width: min(100%, 760px);
+      max-height: min(86vh, 760px);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+      display: none;
+      grid-template-rows: auto minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    .dialog.active {
+      display: grid;
+    }
+
+    .dialog.wide {
+      width: min(100%, 960px);
+    }
+
+    .dialog-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+      background: #fffdfa;
+    }
+
+    .dialog-body {
+      overflow: auto;
+      padding: 16px;
+    }
+
+    .dialog-close {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      font-weight: 900;
+    }
+
+    .chat-shell {
+      display: grid;
+      grid-template-rows: minmax(260px, 1fr) auto;
+      gap: 12px;
+      height: min(62vh, 560px);
+    }
+
+    .chat-messages {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      overflow: auto;
+      padding: 4px;
+    }
+
+    .message {
+      max-width: 78%;
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .message.agent {
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      justify-self: start;
+    }
+
+    .message.user {
+      background: var(--teal);
+      color: #ffffff;
+      justify-self: end;
+    }
+
+    .chat-input {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
+    .chat-input input {
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 8px 10px;
+    }
+
+    .dialog-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .suggestion-box {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: #fffdfa;
+      display: grid;
+      gap: 10px;
+    }
+
+    @media (max-width: 1120px) {
+      .grid.cols-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid.main-layout,
+      .grid.cols-3,
+      .grid.cols-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+      }
+
+      .nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .nav button {
+        grid-template-columns: 28px 1fr;
+      }
+
+      .nav-count {
+        display: none;
+      }
+
+      .main {
+        padding: 16px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .top-actions {
+        justify-content: flex-start;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .grid.cols-4,
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .table {
+        min-width: 600px;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      .dialog-grid,
+      .custom-dates,
+      .chat-input {
+        grid-template-columns: 1fr;
+      }
+
+      .message {
+        max-width: 92%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">PM</div>
+        <div>
+          <div class="brand-title">Personal Manager</div>
+          <div class="brand-subtitle">AI life operations</div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Dashboard sections">
+        <button class="active" data-view-target="dashboard" type="button">
+          <span class="nav-icon">D</span><span>Dashboard</span><span class="nav-count">4</span>
+        </button>
+        <button data-view-target="health" type="button">
+          <span class="nav-icon">H</span><span>Health</span><span class="nav-count">3</span>
+        </button>
+        <button data-view-target="finance" type="button">
+          <span class="nav-icon">F</span><span>Finance</span><span class="nav-count">2</span>
+        </button>
+        <button data-view-target="reminders" type="button">
+          <span class="nav-icon">R</span><span>Reminders</span><span class="nav-count" id="reminderCount">5</span>
+        </button>
+        <button data-view-target="memory" type="button">
+          <span class="nav-icon">M</span><span>Memory</span><span class="nav-count">8</span>
+        </button>
+        <button data-view-target="settings" type="button">
+          <span class="nav-icon">S</span><span>Settings</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="small-label">System status</div>
+        <div class="sync-row">
+          <span><span class="status-dot"></span></span>
+          <span>Telegram connected</span>
+        </div>
+        <div class="sync-row">
+          <span>Memory sync</span>
+          <strong>Live</strong>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="page-kicker" id="pageKicker">Tuesday, May 12</div>
+          <h1 id="pageTitle">Daily command center</h1>
+        </div>
+        <div class="top-actions">
+          <button class="btn" type="button" data-entry-type="meal">
+            <span class="btn-icon">+</span> Log meal
+          </button>
+          <button class="btn" type="button" data-entry-type="expense">
+            <span class="btn-icon">+</span> Add expense
+          </button>
+          <button class="btn primary" type="button" id="openAgentButton">
+            <span class="btn-icon">AI</span> Agent
+          </button>
+        </div>
+      </header>
+
+      <section class="view active" id="dashboard">
+        <div class="grid cols-4">
+          <article class="card metric">
+            <div class="metric-top">
+              <div>
+                <div class="small-label">Calories</div>
+                <div class="metric-value">1,450</div>
+              </div>
+              <span class="pill teal">74%</span>
+            </div>
+            <div class="progress"><span style="width: 74%"></span></div>
+            <p class="metric-note">550 kcal left against today's target.</p>
+          </article>
+          <article class="card metric">
+            <div class="metric-top">
+              <div>
+                <div class="small-label">Protein</div>
+                <div class="metric-value">82g</div>
+              </div>
+              <span class="pill green">On track</span>
+            </div>
+            <div class="progress green"><span style="width: 82%"></span></div>
+            <p class="metric-note">18g left to reach the daily protein goal.</p>
+          </article>
+          <article class="card metric">
+            <div class="metric-top">
+              <div>
+                <div class="small-label">Expenses</div>
+                <div class="metric-value">540</div>
+              </div>
+              <span class="pill amber">Today</span>
+            </div>
+            <div class="progress amber"><span style="width: 44%"></span></div>
+            <p class="metric-note">Food and transport are the main categories.</p>
+          </article>
+          <article class="card metric">
+            <div class="metric-top">
+              <div>
+                <div class="small-label">Goal progress</div>
+                <div class="metric-value">68%</div>
+              </div>
+              <span class="pill blue">Daily</span>
+            </div>
+            <div class="progress"><span style="width: 68%"></span></div>
+            <p class="metric-note">Health is strong; finance logging is incomplete.</p>
+          </article>
+        </div>
+
+        <div class="grid main-layout" style="margin-top: 14px;">
+          <div class="grid">
+            <section class="card">
+              <div class="section-head">
+                <div>
+                  <h2>Daily state engine</h2>
+                  <p class="section-copy">Mock backend state that will become the central intelligence layer.</p>
+                </div>
+                <span class="pill coral">Missing dinner log</span>
+              </div>
+              <div class="quick-actions">
+                <button class="btn" type="button" data-entry-type="meal"><span class="btn-icon">M</span> Log meal</button>
+                <button class="btn" type="button" data-entry-type="expense"><span class="btn-icon">E</span> Add expense</button>
+                <button class="btn" type="button" data-action="quick"><span class="btn-icon">R</span> Set reminder</button>
+                <button class="btn" type="button" data-action="quick"><span class="btn-icon">N</span> Save note</button>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="section-head">
+                <div>
+                  <h2>Weekly trend</h2>
+                  <p class="section-copy">A compact preview of health consistency and daily spending.</p>
+                </div>
+                <span class="pill teal">Mock chart</span>
+              </div>
+              <div class="chart-bars" aria-label="Weekly trend chart">
+                <div class="bar-col"><div class="bar" style="height: 118px"></div><span>Mon</span></div>
+                <div class="bar-col"><div class="bar amber" style="height: 86px"></div><span>Tue</span></div>
+                <div class="bar-col"><div class="bar" style="height: 132px"></div><span>Wed</span></div>
+                <div class="bar-col"><div class="bar coral" style="height: 64px"></div><span>Thu</span></div>
+                <div class="bar-col"><div class="bar" style="height: 146px"></div><span>Fri</span></div>
+                <div class="bar-col"><div class="bar amber" style="height: 102px"></div><span>Sat</span></div>
+                <div class="bar-col"><div class="bar" style="height: 124px"></div><span>Sun</span></div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="section-head">
+                <div>
+                  <h2>Recent activity</h2>
+                  <p class="section-copy">Events the backend will emit and store for analytics.</p>
+                </div>
+              </div>
+              <div class="list">
+                <div class="row">
+                  <div><div class="row-title">Meal logged</div><div class="row-meta">4 eggs and chicken parsed by Health Agent</div></div>
+                  <div class="row-value">10:18</div>
+                </div>
+                <div class="row">
+                  <div><div class="row-title">Expense added</div><div class="row-meta">Transport categorized by Finance Agent</div></div>
+                  <div class="row-value">09:30</div>
+                </div>
+                <div class="row">
+                  <div><div class="row-title">Memory updated</div><div class="row-meta">Prefers direct reminders before dinner</div></div>
+                  <div class="row-value">Yesterday</div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <aside class="grid">
+            <section class="card insight">
+              <div class="insight-primary">
+                <div class="ai-badge">AI INSIGHT</div>
+                <h2>Today's next best action</h2>
+                <p>Ask for a dinner log around 8:30 PM and suggest a high-protein option because protein is close to target but calories remain available.</p>
+              </div>
+              <div class="row">
+                <div><div class="row-title">Memory confidence</div><div class="row-meta">8 relevant memories retrieved</div></div>
+                <div class="row-value">High</div>
+              </div>
+              <div class="row">
+                <div><div class="row-title">Automation</div><div class="row-meta">n8n reminder workflow ready</div></div>
+                <div class="row-value">21:00</div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="section-head">
+                <div>
+                  <h2>Pending reminders</h2>
+                  <p class="section-copy">Interactive mock queue.</p>
+                </div>
+              </div>
+              <div class="list" id="dashboardReminderList">
+                <div class="reminder-item">
+                  <div><div class="row-title">Log dinner</div><div class="row-meta">Due 8:30 PM via Telegram</div></div>
+                  <div class="reminder-actions"><button class="mini-btn complete-reminder" type="button">Done</button></div>
+                </div>
+                <div class="reminder-item">
+                  <div><div class="row-title">Finance check</div><div class="row-meta">Ask if there were cash expenses</div></div>
+                  <div class="reminder-actions"><button class="mini-btn complete-reminder" type="button">Done</button></div>
+                </div>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="health">
+        <div class="range-toolbar">
+          <div>
+            <h2>Health tracking</h2>
+            <p class="section-copy">Defaults to today, with week, month, and custom date review. <span class="pill teal" id="healthRangeState">Showing Today</span></p>
+          </div>
+          <div class="segmented" data-range-group="health">
+            <button class="active" type="button" data-range="today">Today</button>
+            <button type="button" data-range="week">Last 7 days</button>
+            <button type="button" data-range="month">This month</button>
+            <button type="button" data-range="custom">Custom dates</button>
+          </div>
+          <div class="custom-dates" id="healthCustomDates">
+            <div class="field"><label for="healthStart">Start</label><input id="healthStart" type="date" value="2026-05-06"></div>
+            <div class="field"><label for="healthEnd">End</label><input id="healthEnd" type="date" value="2026-05-12"></div>
+          </div>
+        </div>
+
+        <div class="grid cols-3">
+          <article class="card">
+            <div class="section-head">
+              <div><h2>Nutrition progress</h2><p class="section-copy">Calories and protein against daily goals.</p></div>
+            </div>
+            <div class="ring-wrap">
+              <div class="ring"><span>74%</span></div>
+              <div class="list" style="flex: 1 1 180px;">
+                <div class="row"><div><div class="row-title">Calories</div><div class="row-meta">1,450 of 2,000 kcal</div></div><div class="row-value">550 left</div></div>
+                <div class="row"><div><div class="row-title">Protein</div><div class="row-meta">82 of 100 grams</div></div><div class="row-value">18g left</div></div>
+              </div>
+            </div>
+          </article>
+          <article class="card">
+            <div class="section-head">
+              <div><h2>Streaks</h2><p class="section-copy">Habit consistency preview.</p></div>
+            </div>
+            <div class="list">
+              <div class="row"><div><div class="row-title">Meal logs</div><div class="row-meta">Logged 6 days in a row</div></div><span class="pill green">6d</span></div>
+              <div class="row"><div><div class="row-title">Hydration</div><div class="row-meta">2.1L recorded today</div></div><span class="pill teal">70%</span></div>
+              <div class="row"><div><div class="row-title">Sleep target</div><div class="row-meta">Wake time aligned</div></div><span class="pill blue">Good</span></div>
+            </div>
+          </article>
+          <article class="card">
+            <div class="section-head">
+              <div><h2>Health recommendation</h2><p class="section-copy">Generated by the future Health Agent.</p></div>
+            </div>
+            <p class="section-copy">Dinner should prioritize protein with moderate carbs. A simple chicken bowl or paneer salad would keep calories controlled while closing the protein gap.</p>
+          </article>
+        </div>
+
+        <div class="grid cols-2" style="margin-top: 14px;">
+          <article class="card goal-card">
+            <div>
+              <div class="small-label">Active health goal</div>
+              <h2>Hit 100g protein daily</h2>
+              <p class="section-copy">Current target also tracks 2,000 kcal, 2.8L water, and 6-day logging streak.</p>
+            </div>
+            <div class="progress green"><span style="width: 82%"></span></div>
+            <div class="goal-actions">
+              <button class="btn" type="button" data-goal-domain="health"><span class="btn-icon">G</span> Set goal</button>
+              <button class="btn" type="button" id="healthAgentGoal"><span class="btn-icon">AI</span> Ask Agent</button>
+            </div>
+          </article>
+          <article class="card">
+            <div class="small-label">AI suggestions</div>
+            <h2>Suggested next targets</h2>
+            <p class="section-copy">The agent can suggest targets from your patterns, but your accepted or manually entered data becomes the saved goal.</p>
+            <div class="list" style="margin-top: 10px;">
+              <div class="row"><div><div class="row-title">Protein</div><div class="row-meta">Raise to 105g after 5 consistent days</div></div><span class="pill green">Optional</span></div>
+              <div class="row"><div><div class="row-title">Hydration</div><div class="row-meta">Move from 2.8L to 3.0L slowly</div></div><span class="pill teal">Optional</span></div>
+            </div>
+          </article>
+        </div>
+
+        <section class="card" style="margin-top: 14px;">
+          <div class="section-head">
+            <div><h2>Health daily summaries</h2><p class="section-copy">Click a date to see meals, totals, goal progress, and the AI summary.</p></div>
+            <button class="btn" type="button" data-entry-type="meal"><span class="btn-icon">+</span> Add meal</button>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead><tr><th>Date</th><th>Calories</th><th>Protein</th><th>Meals</th><th>Goal</th><th>Summary</th></tr></thead>
+              <tbody>
+                <tr class="clickable-row" data-detail-domain="health" data-detail-date="2026-05-12"><td>May 12</td><td>1,450</td><td>82g</td><td>3</td><td><span class="pill amber">Dinner missing</span></td><td>Strong protein progress, calories available.</td></tr>
+                <tr class="clickable-row" data-detail-domain="health" data-detail-date="2026-05-11"><td>May 11</td><td>1,920</td><td>104g</td><td>4</td><td><span class="pill green">Met</span></td><td>Balanced day with complete logs.</td></tr>
+                <tr class="clickable-row" data-detail-domain="health" data-detail-date="2026-05-10"><td>May 10</td><td>1,760</td><td>91g</td><td>3</td><td><span class="pill teal">Close</span></td><td>Protein slightly under target.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="finance">
+        <div class="range-toolbar">
+          <div>
+            <h2>Finance tracking</h2>
+            <p class="section-copy">Defaults to today, with date-based summaries and drilldowns. <span class="pill amber" id="financeRangeState">Showing Today</span></p>
+          </div>
+          <div class="segmented" data-range-group="finance">
+            <button class="active" type="button" data-range="today">Today</button>
+            <button type="button" data-range="week">Last 7 days</button>
+            <button type="button" data-range="month">This month</button>
+            <button type="button" data-range="custom">Custom dates</button>
+          </div>
+          <div class="custom-dates" id="financeCustomDates">
+            <div class="field"><label for="financeStart">Start</label><input id="financeStart" type="date" value="2026-05-06"></div>
+            <div class="field"><label for="financeEnd">End</label><input id="financeEnd" type="date" value="2026-05-12"></div>
+          </div>
+        </div>
+
+        <div class="grid cols-3">
+          <article class="card metric">
+            <div class="metric-top"><div><div class="small-label">Today spent</div><div class="metric-value">540</div></div><span class="pill amber">44%</span></div>
+            <div class="progress amber"><span style="width: 44%"></span></div>
+            <p class="metric-note">Within daily budget, but food spending is higher than usual.</p>
+          </article>
+          <article class="card metric">
+            <div class="metric-top"><div><div class="small-label">Monthly spend</div><div class="metric-value">18,420</div></div><span class="pill coral">72%</span></div>
+            <div class="progress coral"><span style="width: 72%"></span></div>
+            <p class="metric-note">Eight days left in the budget cycle.</p>
+          </article>
+          <article class="card metric">
+            <div class="metric-top"><div><div class="small-label">Savings goal</div><div class="metric-value">62%</div></div><span class="pill green">On track</span></div>
+            <div class="progress green"><span style="width: 62%"></span></div>
+            <p class="metric-note">Needs 7,600 more this month.</p>
+          </article>
+        </div>
+
+        <div class="grid cols-2" style="margin-top: 14px;">
+          <article class="card goal-card">
+            <div>
+              <div class="small-label">Active finance goal</div>
+              <h2>Save 20,000 this month</h2>
+              <p class="section-copy">Also watching a 25,000 monthly spend limit and 8,000 food category cap.</p>
+            </div>
+            <div class="progress green"><span style="width: 62%"></span></div>
+            <div class="goal-actions">
+              <button class="btn" type="button" data-goal-domain="finance"><span class="btn-icon">G</span> Set goal</button>
+              <button class="btn" type="button" id="financeAgentGoal"><span class="btn-icon">AI</span> Ask Agent</button>
+            </div>
+          </article>
+          <article class="card">
+            <div class="small-label">AI suggestions</div>
+            <h2>Suggested finance targets</h2>
+            <p class="section-copy">The agent can ask for income, fixed expenses, and priorities before suggesting budgets.</p>
+            <div class="list" style="margin-top: 10px;">
+              <div class="row"><div><div class="row-title">Food cap</div><div class="row-meta">Keep this month under 8,000</div></div><span class="pill amber">Optional</span></div>
+              <div class="row"><div><div class="row-title">Savings</div><div class="row-meta">Increase target after income confirmation</div></div><span class="pill green">Optional</span></div>
+            </div>
+          </article>
+        </div>
+
+        <div class="grid cols-2" style="margin-top: 14px;">
+          <section class="card">
+            <div class="section-head">
+              <div><h2>Category breakdown</h2><p class="section-copy">CSS bars, ready to become chart components later.</p></div>
+            </div>
+            <div class="category-grid">
+              <div class="category-item"><strong>Food</strong><div class="progress coral"><span style="width: 76%"></span></div><span>7,200</span></div>
+              <div class="category-item"><strong>Travel</strong><div class="progress amber"><span style="width: 48%"></span></div><span>3,800</span></div>
+              <div class="category-item"><strong>Bills</strong><div class="progress"><span style="width: 64%"></span></div><span>5,600</span></div>
+              <div class="category-item"><strong>Other</strong><div class="progress green"><span style="width: 28%"></span></div><span>1,820</span></div>
+            </div>
+          </section>
+          <section class="card">
+            <div class="section-head">
+              <div><h2>Finance daily summaries</h2><p class="section-copy">Click a date to see transactions, totals, goal progress, and the AI summary.</p></div>
+              <button class="btn" type="button" data-entry-type="expense"><span class="btn-icon">+</span> Add expense</button>
+            </div>
+            <div class="table-wrap">
+              <table class="table">
+                <thead><tr><th>Date</th><th>Spent</th><th>Saved</th><th>Top Category</th><th>Transactions</th><th>Summary</th></tr></thead>
+                <tbody>
+                  <tr class="clickable-row" data-detail-domain="finance" data-detail-date="2026-05-12"><td>May 12</td><td>540</td><td>1,200</td><td>Food</td><td>3</td><td>Good control, verify cash expenses.</td></tr>
+                  <tr class="clickable-row" data-detail-domain="finance" data-detail-date="2026-05-11"><td>May 11</td><td>1,180</td><td>600</td><td>Travel</td><td>5</td><td>Travel spend was above usual.</td></tr>
+                  <tr class="clickable-row" data-detail-domain="finance" data-detail-date="2026-05-10"><td>May 10</td><td>420</td><td>1,500</td><td>Food</td><td>2</td><td>Low-spend day with healthy savings.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="reminders">
+        <div class="grid cols-2">
+          <section class="card">
+            <div class="section-head">
+              <div><h2>Reminder queue</h2><p class="section-copy">Completion changes state locally in this prototype.</p></div>
+              <button class="btn" type="button" data-action="quick"><span class="btn-icon">+</span> New reminder</button>
+            </div>
+            <div class="list" id="mainReminderList">
+              <div class="reminder-item">
+                <div><div class="row-title">Log dinner</div><div class="row-meta">Today 8:30 PM, Telegram</div></div>
+                <div class="reminder-actions"><button class="mini-btn complete-reminder" type="button">Done</button><button class="mini-btn" data-action="snooze" type="button">Snooze</button></div>
+              </div>
+              <div class="reminder-item">
+                <div><div class="row-title">Weekly finance review</div><div class="row-meta">Sunday 7:00 PM, Telegram and email</div></div>
+                <div class="reminder-actions"><button class="mini-btn complete-reminder" type="button">Done</button><button class="mini-btn" data-action="snooze" type="button">Snooze</button></div>
+              </div>
+              <div class="reminder-item">
+                <div><div class="row-title">Hydration check</div><div class="row-meta">Every 3 hours before sleep time</div></div>
+                <div class="reminder-actions"><button class="mini-btn complete-reminder" type="button">Done</button><button class="mini-btn" data-action="snooze" type="button">Snooze</button></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="section-head">
+              <div><h2>Automation rules</h2><p class="section-copy">These will be owned by FastAPI and scheduled through n8n.</p></div>
+            </div>
+            <div class="list">
+              <div class="row"><div><div class="row-title">Meal missing</div><div class="row-meta">Check lunch and dinner logs</div></div><span class="pill teal">Enabled</span></div>
+              <div class="row"><div><div class="row-title">Inactive user</div><div class="row-meta">No activity for 24 hours</div></div><span class="pill amber">Enabled</span></div>
+              <div class="row"><div><div class="row-title">Weekly summary</div><div class="row-meta">Generate every Sunday</div></div><span class="pill green">Enabled</span></div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="memory">
+        <div class="grid cols-3">
+          <article class="card memory-card">
+            <div class="small-label">Preference</div>
+            <h2>Direct evening reminders</h2>
+            <p class="section-copy">User responds better to short Telegram reminders before dinner.</p>
+          </article>
+          <article class="card memory-card" style="border-left-color: var(--amber);">
+            <div class="small-label">Goal</div>
+            <h2>Protein consistency</h2>
+            <p class="section-copy">Daily target is 100g protein with flexible calories.</p>
+          </article>
+          <article class="card memory-card" style="border-left-color: var(--coral);">
+            <div class="small-label">Pattern</div>
+            <h2>Cash expenses missed</h2>
+            <p class="section-copy">Finance follow-up should ask about cash spending at night.</p>
+          </article>
+        </div>
+
+        <section class="card" style="margin-top: 14px;">
+          <div class="section-head">
+            <div><h2>Memory retrieval preview</h2><p class="section-copy">Example memories that the orchestrator should retrieve before answering.</p></div>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead><tr><th>Type</th><th>Summary</th><th>Importance</th><th>Updated</th></tr></thead>
+              <tbody>
+                <tr><td>Routine</td><td>Dinner is usually logged after 8 PM.</td><td>0.82</td><td>Today</td></tr>
+                <tr><td>Preference</td><td>Likes practical food suggestions, not long explanations.</td><td>0.78</td><td>Yesterday</td></tr>
+                <tr><td>Goal</td><td>Monthly savings goal is prioritized after rent.</td><td>0.74</td><td>Mon</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="settings">
+        <div class="grid cols-2">
+          <section class="card">
+            <div class="section-head">
+              <div><h2>Profile and schedule</h2><p class="section-copy">User preferences that drive reminders and summaries.</p></div>
+            </div>
+            <div class="settings-form">
+              <div class="field"><label for="name">Name</label><input id="name" value="Priyanshu"></div>
+              <div class="field"><label for="timezone">Timezone</label><select id="timezone"><option>Asia/Calcutta</option><option>UTC</option><option>America/New_York</option></select></div>
+              <div class="grid cols-2">
+                <div class="field"><label for="wake">Wake time</label><input id="wake" type="time" value="07:00"></div>
+                <div class="field"><label for="sleep">Sleep time</label><input id="sleep" type="time" value="23:30"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="section-head">
+              <div><h2>Notification preferences</h2><p class="section-copy">Controls for Telegram, email, and proactive nudges.</p></div>
+            </div>
+            <div class="toggle-row">
+              <div><div class="row-title">Telegram reminders</div><div class="row-meta">Primary communication channel</div></div>
+              <button class="toggle on" type="button" aria-label="Toggle Telegram reminders"></button>
+            </div>
+            <div class="toggle-row">
+              <div><div class="row-title">Email weekly reports</div><div class="row-meta">Summary delivery through n8n</div></div>
+              <button class="toggle on" type="button" aria-label="Toggle email reports"></button>
+            </div>
+            <div class="toggle-row">
+              <div><div class="row-title">Proactive AI nudges</div><div class="row-meta">Allow the system to suggest next actions</div></div>
+              <button class="toggle on" type="button" aria-label="Toggle proactive nudges"></button>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="dialog-backdrop" id="dialogBackdrop" aria-hidden="true">
+    <section class="dialog" id="agentDialog" role="dialog" aria-modal="true" aria-labelledby="agentDialogTitle">
+      <div class="dialog-head">
+        <div>
+          <div class="small-label">Dashboard Agent</div>
+          <h2 id="agentDialogTitle">Chat with your personal manager</h2>
+          <p class="section-copy">Same assistant as Telegram, with access to health, finance, goals, reminders, and memory.</p>
+        </div>
+        <button class="dialog-close" type="button" data-close-dialog aria-label="Close dialog">X</button>
+      </div>
+      <div class="dialog-body">
+        <div class="chat-shell">
+          <div class="chat-messages" id="chatMessages">
+            <div class="message agent">Hi Priyanshu. I can help log meals or expenses, summarize a date range, set goals, or explain what changed today.</div>
+            <div class="message user">Can you check my health and finance progress?</div>
+            <div class="message agent">Health is close to target: 82g protein and 550 kcal left. Finance is within today's budget, but I would ask about cash expenses before closing the day.</div>
+          </div>
+          <form class="chat-input" id="chatForm">
+            <input id="chatInput" autocomplete="off" placeholder="Ask about meals, expenses, goals, summaries, or reminders">
+            <button class="btn primary" type="submit"><span class="btn-icon">AI</span> Send</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="dialog wide" id="detailDialog" role="dialog" aria-modal="true" aria-labelledby="detailDialogTitle">
+      <div class="dialog-head">
+        <div>
+          <div class="small-label" id="detailDialogKicker">Daily detail</div>
+          <h2 id="detailDialogTitle">May 12 summary</h2>
+          <p class="section-copy" id="detailDialogCopy">Review the summarized data first, then inspect the detailed logs for the selected date.</p>
+        </div>
+        <button class="dialog-close" type="button" data-close-dialog aria-label="Close dialog">X</button>
+      </div>
+      <div class="dialog-body" id="detailDialogBody"></div>
+    </section>
+
+    <section class="dialog wide" id="goalDialog" role="dialog" aria-modal="true" aria-labelledby="goalDialogTitle">
+      <div class="dialog-head">
+        <div>
+          <div class="small-label" id="goalDialogKicker">Goal setup</div>
+          <h2 id="goalDialogTitle">Set goal</h2>
+          <p class="section-copy">AI suggestions are optional. The user chooses what gets saved.</p>
+        </div>
+        <button class="dialog-close" type="button" data-close-dialog aria-label="Close dialog">X</button>
+      </div>
+      <div class="dialog-body">
+        <div class="dialog-grid">
+          <div class="settings-form" id="goalFields"></div>
+          <div class="suggestion-box">
+            <div>
+              <div class="small-label">AI suggestion</div>
+              <h3 id="goalSuggestionTitle">Recommended target</h3>
+              <p class="section-copy" id="goalSuggestionCopy"></p>
+            </div>
+            <button class="btn" type="button" id="acceptGoalSuggestion"><span class="btn-icon">AI</span> Use suggestion</button>
+            <button class="btn primary" type="button" id="saveGoalButton"><span class="btn-icon">G</span> Save user goal</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dialog wide" id="entryDialog" role="dialog" aria-modal="true" aria-labelledby="entryDialogTitle">
+      <div class="dialog-head">
+        <div>
+          <div class="small-label" id="entryDialogKicker">Manual entry</div>
+          <h2 id="entryDialogTitle">Log data</h2>
+          <p class="section-copy" id="entryDialogCopy">Fill the structured fields directly, or use the Agent if you want to describe it naturally.</p>
+        </div>
+        <button class="dialog-close" type="button" data-close-dialog aria-label="Close dialog">X</button>
+      </div>
+      <div class="dialog-body">
+        <div class="dialog-grid">
+          <form class="settings-form" id="entryForm">
+            <div id="entryFields"></div>
+            <div class="form-actions">
+              <button class="btn" type="button" id="entryAgentButton"><span class="btn-icon">AI</span> Ask Agent instead</button>
+              <button class="btn primary" type="submit" id="saveEntryButton"><span class="btn-icon">+</span> Save entry</button>
+            </div>
+          </form>
+          <aside class="entry-note">
+            <div class="small-label">How this works</div>
+            <h3 id="entryHelpTitle">Manual entry vs Agent</h3>
+            <p class="section-copy" id="entryHelpCopy">Manual entry saves exact structured data. The Agent can collect missing details conversationally, suggest values, and then save after confirmation.</p>
+            <div class="list" id="entryRequiredList" style="margin-top: 10px;"></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const titles = {
+      dashboard: ["Daily command center", "Tuesday, May 12"],
+      health: ["Health and nutrition", "Meals, protein, streaks"],
+      finance: ["Finance manager", "Expenses, savings, budgets"],
+      reminders: ["Reminder automation", "Telegram, email, schedules"],
+      memory: ["Conversational memory", "Preferences, goals, patterns"],
+      settings: ["System settings", "Profile, notifications, AI preferences"]
+    };
+
+    const navButtons = document.querySelectorAll("[data-view-target]");
+    const views = document.querySelectorAll(".view");
+    const pageTitle = document.getElementById("pageTitle");
+    const pageKicker = document.getElementById("pageKicker");
+    const toast = document.getElementById("toast");
+    const dialogBackdrop = document.getElementById("dialogBackdrop");
+    const dialogs = document.querySelectorAll(".dialog");
+    const chatMessages = document.getElementById("chatMessages");
+    const chatForm = document.getElementById("chatForm");
+    const chatInput = document.getElementById("chatInput");
+    const detailDialogTitle = document.getElementById("detailDialogTitle");
+    const detailDialogKicker = document.getElementById("detailDialogKicker");
+    const detailDialogBody = document.getElementById("detailDialogBody");
+    const goalFields = document.getElementById("goalFields");
+    const goalDialogTitle = document.getElementById("goalDialogTitle");
+    const goalDialogKicker = document.getElementById("goalDialogKicker");
+    const goalSuggestionTitle = document.getElementById("goalSuggestionTitle");
+    const goalSuggestionCopy = document.getElementById("goalSuggestionCopy");
+    const acceptGoalSuggestion = document.getElementById("acceptGoalSuggestion");
+    const saveGoalButton = document.getElementById("saveGoalButton");
+    const entryDialogTitle = document.getElementById("entryDialogTitle");
+    const entryDialogKicker = document.getElementById("entryDialogKicker");
+    const entryDialogCopy = document.getElementById("entryDialogCopy");
+    const entryFields = document.getElementById("entryFields");
+    const entryForm = document.getElementById("entryForm");
+    const entryAgentButton = document.getElementById("entryAgentButton");
+    const entryHelpTitle = document.getElementById("entryHelpTitle");
+    const entryHelpCopy = document.getElementById("entryHelpCopy");
+    const entryRequiredList = document.getElementById("entryRequiredList");
+    let activeGoalDomain = "health";
+    let activeEntryType = "meal";
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2200);
+    }
+
+    function openDialog(dialogId) {
+      dialogs.forEach((dialog) => dialog.classList.toggle("active", dialog.id === dialogId));
+      dialogBackdrop.classList.add("open");
+      dialogBackdrop.setAttribute("aria-hidden", "false");
+    }
+
+    function closeDialog() {
+      dialogBackdrop.classList.remove("open");
+      dialogBackdrop.setAttribute("aria-hidden", "true");
+      dialogs.forEach((dialog) => dialog.classList.remove("active"));
+    }
+
+    function openAgentDialog(seedMessage) {
+      openDialog("agentDialog");
+      if (seedMessage) {
+        chatInput.value = seedMessage;
+        chatInput.focus();
+      } else {
+        chatInput.focus();
+      }
+    }
+
+    function agentReplyFor(text) {
+      const lower = text.toLowerCase();
+      if (lower.includes("goal") && lower.includes("health")) {
+        return "For a health goal, I would ask your target calories, protein, hydration, weight direction, and how strict you want reminders to be. I can suggest values, but you approve the final numbers.";
+      }
+      if (lower.includes("goal") && lower.includes("finance")) {
+        return "For a finance goal, I need income, fixed expenses, savings target, budget limit, and category limits. Once you confirm them, I can save the goal or update the dashboard plan.";
+      }
+      if (lower.includes("finance") || lower.includes("expense") || lower.includes("budget")) {
+        return "Today you spent 540 across 3 transactions. You are within budget, but I would check whether any cash expenses are missing before generating the daily finance summary.";
+      }
+      if (lower.includes("health") || lower.includes("meal") || lower.includes("protein")) {
+        return "Today you logged 1,450 kcal and 82g protein. You are close to your protein target, so dinner should add around 18g protein without overshooting calories.";
+      }
+      if (lower.includes("summary") || lower.includes("week") || lower.includes("month")) {
+        return "I can summarize today, last week, this month, or a custom range. The dashboard tables let you click any date to inspect the underlying logs.";
+      }
+      return "Got it. In the real app I would route this through the same FastAPI orchestrator used by Telegram, retrieve memory, choose the right agent, and save any confirmed updates.";
+    }
+
+    function sendAgentMessage(message) {
+      const text = message.trim();
+      if (!text) return;
+      chatMessages.insertAdjacentHTML("beforeend", `<div class="message user">${escapeHtml(text)}</div>`);
+      chatMessages.insertAdjacentHTML("beforeend", `<div class="message agent">${agentReplyFor(text)}</div>`);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      chatInput.value = "";
+    }
+
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[char]));
+    }
+
+    function detailMarkup(domain, date) {
+      if (domain === "health") {
+        return `
+          <div class="grid cols-3">
+            <article class="card tight"><div class="small-label">Calories</div><div class="metric-value">1,450</div><p class="metric-note">550 kcal left</p></article>
+            <article class="card tight"><div class="small-label">Protein</div><div class="metric-value">82g</div><p class="metric-note">18g left</p></article>
+            <article class="card tight"><div class="small-label">Goal state</div><div class="metric-value">74%</div><p class="metric-note">Dinner log pending</p></article>
+          </div>
+          <div class="grid cols-2" style="margin-top: 14px;">
+            <section class="card">
+              <h3>AI summary</h3>
+              <p class="section-copy">Protein is progressing well and calories are still available. The best follow-up is to ask for dinner and suggest a simple high-protein option.</p>
+            </section>
+            <section class="card">
+              <h3>Meal details</h3>
+              <div class="list">
+                <div class="row"><div><div class="row-title">Breakfast</div><div class="row-meta">Oats, banana, milk</div></div><div class="row-value">430 / 22g</div></div>
+                <div class="row"><div><div class="row-title">Lunch</div><div class="row-meta">4 eggs and chicken</div></div><div class="row-value">620 / 58g</div></div>
+                <div class="row"><div><div class="row-title">Snack</div><div class="row-meta">Curd and fruit</div></div><div class="row-value">180 / 8g</div></div>
+              </div>
+            </section>
+          </div>`;
+      }
+      return `
+        <div class="grid cols-3">
+          <article class="card tight"><div class="small-label">Spent</div><div class="metric-value">540</div><p class="metric-note">Today across 3 entries</p></article>
+          <article class="card tight"><div class="small-label">Saved</div><div class="metric-value">1,200</div><p class="metric-note">62% monthly progress</p></article>
+          <article class="card tight"><div class="small-label">Top category</div><div class="metric-value">Food</div><p class="metric-note">Check cash expenses</p></article>
+        </div>
+        <div class="grid cols-2" style="margin-top: 14px;">
+          <section class="card">
+            <h3>AI summary</h3>
+            <p class="section-copy">Spending is under the daily limit. Food is the top category, so the agent should ask whether there were any cash food expenses before closing the day.</p>
+          </section>
+          <section class="card">
+            <h3>Transaction details</h3>
+            <div class="list">
+              <div class="row"><div><div class="row-title">Lunch</div><div class="row-meta">Food</div></div><div class="row-value">260</div></div>
+              <div class="row"><div><div class="row-title">Cab</div><div class="row-meta">Travel</div></div><div class="row-value">180</div></div>
+              <div class="row"><div><div class="row-title">Tea and snacks</div><div class="row-meta">Food</div></div><div class="row-value">100</div></div>
+            </div>
+          </section>
+        </div>`;
+    }
+
+    function openDayDetail(domain, date) {
+      const label = domain === "health" ? "Health daily detail" : "Finance daily detail";
+      detailDialogKicker.textContent = label;
+      detailDialogTitle.textContent = `${date} ${domain} summary`;
+      detailDialogBody.innerHTML = detailMarkup(domain, date);
+      openDialog("detailDialog");
+    }
+
+    function healthGoalFields(useSuggestion) {
+      return `
+        <div class="field"><label for="goalCalories">Daily calories</label><input id="goalCalories" value="${useSuggestion ? "2,050" : "2,000"}"></div>
+        <div class="field"><label for="goalProtein">Daily protein</label><input id="goalProtein" value="${useSuggestion ? "105g" : "100g"}"></div>
+        <div class="field"><label for="goalHydration">Hydration</label><input id="goalHydration" value="${useSuggestion ? "3.0L" : "2.8L"}"></div>
+        <div class="field"><label for="goalWeight">Weight direction</label><select id="goalWeight"><option>Maintain weight</option><option>Lose weight slowly</option><option>Gain muscle</option></select></div>
+        <div class="field"><label for="goalStreak">Logging streak target</label><input id="goalStreak" value="${useSuggestion ? "7 days" : "6 days"}"></div>`;
+    }
+
+    function financeGoalFields(useSuggestion) {
+      return `
+        <div class="field"><label for="goalBudget">Monthly budget</label><input id="goalBudget" value="${useSuggestion ? "24,000" : "25,000"}"></div>
+        <div class="field"><label for="goalSavings">Monthly savings target</label><input id="goalSavings" value="${useSuggestion ? "22,000" : "20,000"}"></div>
+        <div class="field"><label for="goalFood">Food category cap</label><input id="goalFood" value="${useSuggestion ? "8,000" : "8,500"}"></div>
+        <div class="field"><label for="goalAlerts">Spending alert</label><select id="goalAlerts"><option>Alert at 80%</option><option>Alert at 70%</option><option>Alert only if overspent</option></select></div>`;
+    }
+
+    function renderGoalFields(useSuggestion = false) {
+      if (activeGoalDomain === "health") {
+        goalFields.innerHTML = healthGoalFields(useSuggestion);
+        goalSuggestionTitle.textContent = "Health suggestion";
+        goalSuggestionCopy.textContent = "Based on recent logs, try 2,050 kcal, 105g protein, 3.0L hydration, and a 7-day logging streak. You can edit every value before saving.";
+      } else {
+        goalFields.innerHTML = financeGoalFields(useSuggestion);
+        goalSuggestionTitle.textContent = "Finance suggestion";
+        goalSuggestionCopy.textContent = "Based on current spending, try a 24,000 monthly budget, 22,000 savings target, and an 8,000 food cap after confirming income and fixed expenses.";
+      }
+    }
+
+    function openGoalDialog(domain) {
+      activeGoalDomain = domain;
+      goalDialogKicker.textContent = domain === "health" ? "Health goal setup" : "Finance goal setup";
+      goalDialogTitle.textContent = domain === "health" ? "Set health goal" : "Set finance goal";
+      renderGoalFields(false);
+      openDialog("goalDialog");
+    }
+
+    function mealEntryFields() {
+      return `
+        <div class="grid cols-2">
+          <div class="field"><label for="mealDate">Date</label><input id="mealDate" type="date" value="2026-05-12" required></div>
+          <div class="field"><label for="mealTime">Time</label><input id="mealTime" type="time" value="20:30" required></div>
+        </div>
+        <div class="grid cols-2">
+          <div class="field"><label for="mealType">Meal type</label><select id="mealType" required><option>Dinner</option><option>Breakfast</option><option>Lunch</option><option>Snack</option></select></div>
+          <div class="field"><label for="mealSource">Source</label><select id="mealSource"><option>Dashboard manual</option><option>Telegram text</option><option>Voice note</option><option>Agent assisted</option></select></div>
+        </div>
+        <div class="field"><label for="mealItems">Food items / raw input</label><textarea id="mealItems" required placeholder="Example: 4 eggs, chicken, rice, curd"></textarea></div>
+        <div class="grid cols-4">
+          <div class="field"><label for="mealCalories">Calories</label><input id="mealCalories" inputmode="numeric" placeholder="620" required></div>
+          <div class="field"><label for="mealProtein">Protein</label><input id="mealProtein" placeholder="58g" required></div>
+          <div class="field"><label for="mealCarbs">Carbs</label><input id="mealCarbs" placeholder="35g"></div>
+          <div class="field"><label for="mealFats">Fats</label><input id="mealFats" placeholder="22g"></div>
+        </div>
+        <div class="field"><label for="mealNotes">Notes</label><textarea id="mealNotes" placeholder="Anything useful for memory, preferences, or future suggestions"></textarea></div>`;
+    }
+
+    function expenseEntryFields() {
+      return `
+        <div class="grid cols-2">
+          <div class="field"><label for="expenseDate">Date</label><input id="expenseDate" type="date" value="2026-05-12" required></div>
+          <div class="field"><label for="expenseTime">Time</label><input id="expenseTime" type="time" value="21:00"></div>
+        </div>
+        <div class="grid cols-2">
+          <div class="field"><label for="expenseAmount">Amount</label><input id="expenseAmount" inputmode="decimal" placeholder="260" required></div>
+          <div class="field"><label for="expenseCurrency">Currency</label><select id="expenseCurrency"><option>INR</option><option>USD</option><option>EUR</option></select></div>
+        </div>
+        <div class="grid cols-2">
+          <div class="field"><label for="expenseCategory">Category</label><select id="expenseCategory" required><option>Food</option><option>Travel</option><option>Bills</option><option>Health</option><option>Shopping</option><option>Other</option></select></div>
+          <div class="field"><label for="expenseType">Type</label><select id="expenseType" required><option>Expense</option><option>Income</option><option>Saving</option><option>Refund</option></select></div>
+        </div>
+        <div class="grid cols-2">
+          <div class="field"><label for="paymentMethod">Payment method</label><select id="paymentMethod"><option>UPI</option><option>Cash</option><option>Card</option><option>Bank transfer</option></select></div>
+          <div class="field"><label for="expenseSource">Source</label><select id="expenseSource"><option>Dashboard manual</option><option>Telegram text</option><option>Voice note</option><option>Agent assisted</option></select></div>
+        </div>
+        <div class="field"><label for="expenseNote">Note / raw input</label><textarea id="expenseNote" required placeholder="Example: Lunch with friend, cab to office, grocery"></textarea></div>`;
+    }
+
+    function renderEntryDialog(type) {
+      activeEntryType = type;
+      if (type === "meal") {
+        entryDialogKicker.textContent = "Health log";
+        entryDialogTitle.textContent = "Log meal";
+        entryDialogCopy.textContent = "Add the meal manually with the structured nutrition data needed for tracking.";
+        entryFields.innerHTML = mealEntryFields();
+        entryHelpTitle.textContent = "What the Agent can add";
+        entryHelpCopy.textContent = "If you use Agent, you can say something like 'I ate 4 eggs and chicken'. It will ask missing details, estimate nutrition, and save only after confirmation.";
+        entryRequiredList.innerHTML = `
+          <div class="row"><div><div class="row-title">Required</div><div class="row-meta">Date, time, meal type, food items, calories, protein</div></div><span class="pill teal">Health</span></div>
+          <div class="row"><div><div class="row-title">Optional</div><div class="row-meta">Carbs, fats, notes, source</div></div><span class="pill green">Memory</span></div>`;
+      } else {
+        entryDialogKicker.textContent = "Finance log";
+        entryDialogTitle.textContent = "Add expense";
+        entryDialogCopy.textContent = "Add the transaction manually with the structured finance data needed for budgets and summaries.";
+        entryFields.innerHTML = expenseEntryFields();
+        entryHelpTitle.textContent = "What the Agent can add";
+        entryHelpCopy.textContent = "If you use Agent, you can say something like 'spent 260 on lunch'. It will ask for category, payment mode, or date if missing, then save after confirmation.";
+        entryRequiredList.innerHTML = `
+          <div class="row"><div><div class="row-title">Required</div><div class="row-meta">Date, amount, category, type, note</div></div><span class="pill amber">Finance</span></div>
+          <div class="row"><div><div class="row-title">Optional</div><div class="row-meta">Time, payment method, currency, source</div></div><span class="pill green">Budget</span></div>`;
+      }
+    }
+
+    function openEntryDialog(type) {
+      renderEntryDialog(type);
+      openDialog("entryDialog");
+    }
+
+    navButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const target = button.dataset.viewTarget;
+        navButtons.forEach((item) => item.classList.toggle("active", item === button));
+        views.forEach((view) => view.classList.toggle("active", view.id === target));
+        pageTitle.textContent = titles[target][0];
+        pageKicker.textContent = titles[target][1];
+      });
+    });
+
+    document.getElementById("openAgentButton").addEventListener("click", () => openAgentDialog());
+    document.getElementById("healthAgentGoal").addEventListener("click", () => openAgentDialog("Help me set my health goal"));
+    document.getElementById("financeAgentGoal").addEventListener("click", () => openAgentDialog("Help me set my finance goal"));
+
+    chatForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      sendAgentMessage(chatInput.value);
+    });
+
+    document.querySelectorAll("[data-close-dialog]").forEach((button) => {
+      button.addEventListener("click", closeDialog);
+    });
+
+    dialogBackdrop.addEventListener("click", (event) => {
+      if (event.target === dialogBackdrop) closeDialog();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && dialogBackdrop.classList.contains("open")) {
+        closeDialog();
+      }
+    });
+
+    document.querySelectorAll("[data-range-group]").forEach((group) => {
+      const domain = group.dataset.rangeGroup;
+      const customDates = document.getElementById(`${domain}CustomDates`);
+      group.querySelectorAll("button").forEach((button) => {
+        button.addEventListener("click", () => {
+          group.querySelectorAll("button").forEach((item) => item.classList.toggle("active", item === button));
+          customDates.classList.toggle("active", button.dataset.range === "custom");
+          const labels = { today: "Today", week: "Last 7 days", month: "This month", custom: "Custom dates" };
+          const state = document.getElementById(`${domain}RangeState`);
+          if (state) state.textContent = `Showing ${labels[button.dataset.range]}`;
+          showToast(`${domain[0].toUpperCase() + domain.slice(1)} range set to ${labels[button.dataset.range]}.`);
+        });
+      });
+    });
+
+    document.querySelectorAll("[data-detail-domain]").forEach((row) => {
+      row.addEventListener("click", () => openDayDetail(row.dataset.detailDomain, row.dataset.detailDate));
+    });
+
+    document.querySelectorAll("[data-goal-domain]").forEach((button) => {
+      button.addEventListener("click", () => openGoalDialog(button.dataset.goalDomain));
+    });
+
+    acceptGoalSuggestion.addEventListener("click", () => {
+      renderGoalFields(true);
+      showToast("AI suggestion copied into editable goal fields.");
+    });
+
+    saveGoalButton.addEventListener("click", () => {
+      closeDialog();
+      showToast(`${activeGoalDomain[0].toUpperCase() + activeGoalDomain.slice(1)} goal saved in prototype state.`);
+    });
+
+    document.querySelectorAll("[data-entry-type]").forEach((button) => {
+      button.addEventListener("click", () => openEntryDialog(button.dataset.entryType));
+    });
+
+    entryAgentButton.addEventListener("click", () => {
+      const seed = activeEntryType === "meal"
+        ? "Help me log a meal. Ask me for the missing nutrition details."
+        : "Help me add an expense. Ask me for missing finance details.";
+      openAgentDialog(seed);
+    });
+
+    entryForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      closeDialog();
+      showToast(activeEntryType === "meal" ? "Meal saved in prototype state." : "Expense saved in prototype state.");
+    });
+
+    document.querySelectorAll("[data-action='quick']").forEach((button) => {
+      button.addEventListener("click", () => {
+        showToast("Prototype action: this will open a real workflow in the app.");
+      });
+    });
+
+    document.querySelectorAll("[data-action='snooze']").forEach((button) => {
+      button.addEventListener("click", () => {
+        showToast("Reminder snoozed in prototype state.");
+      });
+    });
+
+    document.querySelectorAll(".complete-reminder").forEach((button) => {
+      button.addEventListener("click", () => {
+        const item = button.closest(".reminder-item");
+        item.classList.add("done");
+        button.textContent = "Done";
+        button.disabled = true;
+        const count = document.getElementById("reminderCount");
+        const nextCount = Math.max(0, Number(count.textContent) - 1);
+        count.textContent = String(nextCount);
+        showToast("Reminder marked complete.");
+      });
+    });
+
+    document.querySelectorAll(".toggle").forEach((toggle) => {
+      toggle.addEventListener("click", () => {
+        toggle.classList.toggle("on");
+        showToast(toggle.classList.contains("on") ? "Preference enabled." : "Preference disabled.");
+      });
+    });
+  </script>
+</body>
+</html>
