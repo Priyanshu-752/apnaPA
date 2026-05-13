@@ -16,6 +16,7 @@ User-facing and operator-facing documentation for completed features lives here.
 
 | Doc | Purpose | Status |
 | --- | --- | --- |
+| `frontend_mock.md` | How to run and test the current dummy frontend | Active |
 | `local_setup.md` | How to run backend, frontend, services, and tests locally | Planned |
 | `google_auth.md` | Google login and FastAPI session behavior | Planned |
 | `telegram_linking.md` | How users connect Telegram to dashboard accounts | Planned |

@@ -4,6 +4,7 @@ Per-module test notes live here once implementation begins.
 
 Planned module docs:
 
+- `frontend.md`
 - `auth.md`
 - `onboarding.md`
 - `telegram.md`

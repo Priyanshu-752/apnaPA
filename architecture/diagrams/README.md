@@ -1,6 +1,10 @@
 # Architecture Diagrams
 
-Architecture diagrams and data-flow notes will live here.
+Architecture diagrams and data-flow notes live here.
+
+Current diagrams:
+
+- `system-data-flow.md`
 
 Planned diagrams:
 

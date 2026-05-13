@@ -9,6 +9,7 @@ Feature specifications and implementation roadmaps live here.
 | Plan | Status | Priority |
 | --- | --- | --- |
 | `mvp_implementation_order.md` | Ready | High |
+| `frontend_backend_agent_architecture.md` | Ready | High |
 
 ---
 

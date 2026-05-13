@@ -1,7 +1,7 @@
 # apnaPA Architecture
 
 **Last Updated**: 2026-05-13  
-**Status**: Target architecture defined, implementation pending  
+**Status**: Target architecture expanded, implementation pending  
 **Source**: `../plan.md`
 
 ---
@@ -49,6 +49,12 @@ Google OAuth
 | PostgreSQL | Structured users, auth, logs, goals, reminders, events, messages, usage logs |
 | Qdrant | Vector memory keyed by user id and memory id |
 | Redis and Workers | Later queue, cache, rate limiting, retries, and background processing |
+
+Component deep dives:
+
+- `components/backend-core.md`
+- `components/frontend-dashboard.md`
+- `components/agent-system.md`
 
 ---
 
@@ -112,6 +118,8 @@ frontend/
 ## Current State
 
 - Product architecture is planned in detail.
+- Backend, frontend, and agent architecture docs are now split into component plans.
+- System data flows are documented in `diagrams/system-data-flow.md`.
 - Dashboard HTML prototype exists.
 - Backend and frontend application scaffolds are not yet created.
 - First implementation priority is backend FastAPI scaffold, auth foundation, onboarding, Telegram linking, and core agent shell.
@@ -123,4 +131,5 @@ frontend/
 - `../critical_prompt.md`
 - `../plan.md`
 - `../plans/mvp_implementation_order.md`
+- `../plans/frontend_backend_agent_architecture.md`
 - `changelog.md`

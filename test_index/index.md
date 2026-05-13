@@ -2,8 +2,8 @@
 
 **Last Updated**: 2026-05-13  
 **Status**: Planned  
-**Total Test Files**: 0  
-**Total Test Cases**: 0
+**Total Test Files**: 3  
+**Total Test Cases**: 11
 
 ---
 
@@ -11,9 +11,9 @@
 
 | Metric | Value |
 | --- | --- |
-| Total Test Files | 0 |
-| Total Test Cases | 0 |
-| Passing | 0 |
+| Total Test Files | 3 |
+| Total Test Cases | 11 |
+| Passing | 11 |
 | Failing | 0 |
 | Skipped | 0 |
 | Flaky | 0 |
@@ -55,6 +55,22 @@
 
 ---
 
+## Active Frontend Tests
+
+| Test File | What It Tests | Status |
+| --- | --- | --- |
+| `frontend/tests/dummy-data.test.mjs` | Navigation, complete MVP/prototype dummy data coverage, meal and expense entry specs | Passing |
+| `frontend/tests/agent.test.mjs` | Agent intent classification, confirmation drafts, dummy replies | Passing |
+| `frontend/tests/html-contract.test.mjs` | Required HTML roots/dialogs, prototype section parity, no API integration, module entrypoint | Passing |
+
+Run:
+
+```bash
+npm.cmd test --prefix frontend
+```
+
+---
+
 ## Planned Integration Tests
 
 | Flow | Coverage Intent | Status |
@@ -77,7 +93,9 @@
 
 | Test File | Module | Status | Notes |
 | --- | --- | --- | --- |
-| _No tests yet_ | | | |
+| `frontend/tests/dummy-data.test.mjs` | Frontend dummy data | Passing | Node built-in test runner |
+| `frontend/tests/agent.test.mjs` | Frontend Agent mock | Passing | Confirms write-like intents require confirmation |
+| `frontend/tests/html-contract.test.mjs` | Frontend HTML shell | Passing | Confirms no API integration and protects prototype sections |
 
 ---
 

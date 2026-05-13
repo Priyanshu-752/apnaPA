@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 36 31% 95%;
+    --foreground: 192 9% 14%;
+    --card: 0 0% 100%;
+    --card-foreground: 192 9% 14%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 192 9% 14%;
+    --primary: 175 72% 28%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 38 28% 93%;
+    --secondary-foreground: 192 9% 14%;
+    --muted: 38 28% 93%;
+    --muted-foreground: 146 6% 42%;
+    --accent: 174 45% 89%;
+    --accent-foreground: 175 72% 28%;
+    --border: 37 19% 84%;
+    --input: 37 19% 84%;
+    --ring: 175 72% 28%;
+    --radius: 8px;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply bg-background;
+  }
+
+  body {
+    @apply min-h-screen bg-background text-foreground antialiased;
+    font-family: Aptos, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    letter-spacing: 0;
+  }
+
+  button,
+  input {
+    font: inherit;
+  }
+
+  h1,
+  h2,
+  h3,
+  p {
+    margin: 0;
+  }
+}
+
+@layer components {
+  .small-label {
+    @apply text-[11px] font-extrabold uppercase tracking-[0.04em] text-muted-foreground;
+  }
+
+  .status-dot {
+    @apply inline-block h-2 w-2 rounded-full bg-amber;
+  }
+
+  .status-dot.green {
+    @apply bg-green;
+  }
+
+  .table-row {
+    grid-template-columns: minmax(92px, 1fr) repeat(5, minmax(86px, auto));
+  }
+
+  .ring-progress {
+    background:
+      radial-gradient(circle at center, hsl(var(--card)) 57%, transparent 59%),
+      conic-gradient(#147c72 0 74%, hsl(var(--secondary)) 74% 100%);
+  }
+}

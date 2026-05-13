@@ -50,4 +50,4 @@ What becomes easier, harder, or constrained?
 
 | ADR | Title | Status | Date |
 | --- | --- | --- | --- |
-| _No ADRs yet_ | | | |
+| `ADR-001-system-ownership-boundaries.md` | System Ownership Boundaries | Accepted | 2026-05-13 |

@@ -2,7 +2,7 @@
 
 **Last Updated**: 2026-05-13  
 **Project**: apnaPA AI Personal Manager  
-**Status**: Foundation setup  
+**Status**: Frontend dummy implementation ready  
 **Primary Plan**: `plan.md`
 
 ---
@@ -11,8 +11,9 @@
 
 ### In Progress
 
-- Agentic coding context pipeline is being installed at the project root.
-- Product and architecture planning exist in `plan.md`.
+- Frontend-first dummy implementation is complete and tested.
+- Backend FastAPI scaffold is the next implementation target.
+- Product and master architecture planning exist in `plan.md`.
 - Dashboard visual direction exists in `dashboard.html`.
 
 ### Completed
@@ -20,10 +21,20 @@
 - Long-form product plan created for apnaPA MVP and future phases.
 - Dashboard HTML prototype created as the current visual guide.
 - Reference context pipeline reviewed and adapted into an apnaPA-specific structure.
+- Root-level agentic context pipeline created.
+- Backend core, frontend dashboard, and agent system architecture docs created.
+- Frontend/backend/agent implementation plan created.
+- System ownership boundaries recorded in ADR-001.
+- Frontend mock created in `frontend/` using local dummy data and no API integration.
+- Frontend tests added and passing with Node's built-in test runner.
+- Frontend mock expanded to preserve the Dashboard, Health, Finance, and Reminders sections from `dashboard.html` before Next.js conversion.
+- Learning folder added for backend, FastAPI, agents, RAG, n8n, testing, and official resources.
 
 ### Next Steps
 
 - Create the backend FastAPI scaffold.
+- Create backend dummy tests before real integrations.
+- Create agent base contract and dummy tests before OpenAI integration.
 - Add Firebase-backed Google auth handoff.
 - Implement users, auth providers, sessions, JWT access tokens, refresh tokens, and auth middleware.
 - Implement onboarding persistence and initial AI profile, goal, and reminder setup.
@@ -62,6 +73,7 @@ None currently.
 3. **One orchestrator entry point**: Sub-agents do not communicate directly with users.
 4. **Confirmed AI writes**: AI-generated writes require explicit user confirmation and audit logging.
 5. **Context pipeline lives at root**: The reusable reference folder is removed after root docs are created.
+6. **System ownership boundaries are accepted**: FastAPI owns backend intelligence and product state; frontend owns UI; agents run through the orchestrator.
 
 See `decisions/` for future ADRs.
 
@@ -74,8 +86,11 @@ See `decisions/` for future ADRs.
 | `critical_prompt.md` | Product north star and MVP principles |
 | `plan.md` | Full master plan and implementation sequence |
 | `dashboard.html` | Current dashboard visual prototype |
+| `frontend/` | Current dependency-light frontend mock |
+| `learn/` | Learning docs for backend, agents, RAG, n8n, FastAPI, and tests |
 | `architecture/` | Living architecture docs |
 | `plans/` | Feature and implementation plans |
+| `decisions/ADR-001-system-ownership-boundaries.md` | Accepted system ownership boundary |
 | `test_index/` | Test registry and planned coverage |
 | `logs/` | Development activity history |
 | `context_checkpoints/` | Resumable project snapshots |
