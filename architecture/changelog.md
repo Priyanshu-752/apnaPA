@@ -9,3 +9,5 @@
 - Added system data-flow documentation for auth, Telegram linking, conversation, and manual dashboard writes.
 - Implemented first frontend mock in `frontend/` using local dummy data and tests.
 - Added `learn/` documentation for backend, FastAPI, agents, RAG, n8n, testing, and official resources.
+- Converted the frontend into a route-based Next.js App Router scaffold under `frontend/src/`.
+- Added auth and dashboard route groups, protected-route middleware, responsive dashboard shell, and TypeScript route-contract tests.

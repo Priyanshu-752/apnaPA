@@ -66,6 +66,14 @@ Please:
 
 ---
 
+## Project Refresh Prompt
+
+```text
+Use project_refresh_prompt.md and update the project context after the latest major implementation work.
+```
+
+---
+
 ## Quick Reference
 
 | Need | File |
@@ -74,6 +82,7 @@ Please:
 | Full plan | `plan.md` |
 | Current state | `context.md` |
 | Start or end sessions | `work_prompt.md` |
+| Full project-context refresh | `project_refresh_prompt.md` |
 | Architecture | `architecture/` |
 | Feature plans | `plans/` |
 | Tests | `test_index/` |

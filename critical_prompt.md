@@ -1,7 +1,7 @@
 # apnaPA Project Vision
 
 **Project**: apnaPA AI Personal Manager  
-**Status**: Planning and foundation setup  
+**Status**: Frontend route scaffold ready, backend not started  
 **Source of Truth**: `plan.md`
 
 ---
@@ -25,6 +25,8 @@ People often track meals, expenses, goals, reminders, and personal plans across 
 Build a multi-user AI platform where FastAPI owns identity, product state, AI orchestration, business logic, memory, events, and agent coordination. Telegram is the first external conversation channel, and the dashboard is the first visual control surface.
 
 Both Telegram and the dashboard Agent use the same backend orchestrator, memory retrieval, typed tools, confirmation rules, and user-scoped data.
+
+The current frontend already reflects this at the routing level: auth is separated from protected dashboard screens, and the dashboard surface is split into route-based screens instead of a single-page mock.
 
 ---
 

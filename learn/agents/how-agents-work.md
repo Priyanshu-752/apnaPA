@@ -81,7 +81,7 @@ Examples:
 - creating a reminder.
 - changing preferences.
 
-The frontend mock already demonstrates this with deterministic confirmation drafts in `frontend/src/agent.js`.
+The frontend mock already demonstrates this with deterministic confirmation drafts in `frontend/src/lib/agent.ts`.
 
 ---
 

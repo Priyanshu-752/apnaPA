@@ -63,6 +63,7 @@ This project uses a file-based context pipeline so human and AI coding sessions 
 2. Create a checkpoint in `context_checkpoints/`.
 3. Update `context.md`.
 4. Update `structure.md` if top-level structure changed.
+5. Use `project_refresh_prompt.md` when a major implementation step has changed multiple docs or architecture notes.
 
 ---
 
@@ -88,3 +89,4 @@ This project uses a file-based context pipeline so human and AI coding sessions 
 - `docs/` are for completed user-facing or operator-facing features.
 - `knowledgebase/` requires citations or local proof.
 - `decisions/` records choices that future work should not casually re-litigate.
+- `project_refresh_prompt.md` is the reusable maintenance handoff for sweeping project-context updates after significant code changes.

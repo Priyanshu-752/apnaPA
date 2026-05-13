@@ -8,7 +8,7 @@
 
 ## Summary
 
-Implement apnaPA as a FastAPI-owned AI backend with a dashboard and a shared agent runtime used by both Telegram and Dashboard Agent. The current phase is frontend-first and dummy-first: stabilize the UI and tests before API integration, then build backend and agent contracts with dummy tests, then connect them.
+Implement apnaPA as a FastAPI-owned AI backend with a dashboard and a shared agent runtime used by both Telegram and Dashboard Agent. The current phase is still dummy-first, but the frontend is now a route-based Next.js scaffold with protected routes and separate screen pages. The next major phase is backend and agent contract implementation before real integration.
 
 ---
 
@@ -38,8 +38,8 @@ Implement apnaPA as a FastAPI-owned AI backend with a dashboard and a shared age
 
 ## Frontend Plan
 
-- Start with a dependency-light frontend mock in `frontend/` using local dummy data and Node tests.
-- Later migrate to Next.js, TypeScript, TailwindCSS, Shadcn UI, TanStack Query, and Zustand.
+- The frontend now runs on Next.js, TypeScript, TailwindCSS, Shadcn-style local UI, Zustand, and Node tests.
+- Add TanStack Query when backend contracts are ready.
 - Use `dashboard.html` as the visual baseline for layout, spacing, colors, and dashboard density.
 - Keep Firebase and FastAPI API integration out until dummy UI, backend, and agent tests are stable.
 - Add Firebase Google login UI and FastAPI auth exchange in the integration phase.
@@ -65,7 +65,7 @@ Implement apnaPA as a FastAPI-owned AI backend with a dashboard and a shared age
 10. Daily state, goals, reminders, notifications, and events.
 11. Qdrant memory interfaces and retrieval.
 12. n8n workflow contracts.
-13. Migrate frontend mock to Next.js app shell.
+13. Add backend scaffold and auth/session contracts that match the current frontend route structure.
 14. Connect frontend modules to FastAPI after dummy backend and agent tests pass.
 15. Full integration tests across auth, onboarding, Telegram, agent, and dashboard flows.
 
@@ -80,7 +80,7 @@ Implement apnaPA as a FastAPI-owned AI backend with a dashboard and a shared age
 - Manual dashboard writes bypass AI but still use backend validation, events, and user isolation.
 - Domain writes update daily state or emit events needed for later aggregation.
 - Frontend modules have loading, empty, error, and success states.
-- The first frontend mock can run and test without installing external packages.
+- The current frontend route scaffold can run and test locally with route guards, separate screens, and no backend dependency.
 - Tests cover auth/session helpers, onboarding, Telegram linking, agent routing, health and finance logging, daily state, summaries, and protected dashboard APIs.
 
 ---

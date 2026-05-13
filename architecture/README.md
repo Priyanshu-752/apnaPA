@@ -1,7 +1,7 @@
 # apnaPA Architecture
 
 **Last Updated**: 2026-05-13  
-**Status**: Target architecture expanded, implementation pending  
+**Status**: Target architecture expanded, frontend scaffold implemented  
 **Source**: `../plan.md`
 
 ---
@@ -102,15 +102,14 @@ backend/
 
 ```text
 frontend/
-  app/
-  components/
-  modules/
-  stores/
-  services/
-  hooks/
-  lib/
-  types/
-  utils/
+  src/
+    app/
+    components/
+    lib/
+    stores/
+    middleware.ts
+  tests/
+  public/
 ```
 
 ---
@@ -121,8 +120,9 @@ frontend/
 - Backend, frontend, and agent architecture docs are now split into component plans.
 - System data flows are documented in `diagrams/system-data-flow.md`.
 - Dashboard HTML prototype exists.
-- Backend and frontend application scaffolds are not yet created.
-- First implementation priority is backend FastAPI scaffold, auth foundation, onboarding, Telegram linking, and core agent shell.
+- Frontend application scaffold exists as a route-based Next.js app with protected dashboard routes and local dummy state.
+- Backend application scaffold is not yet created.
+- First implementation priority is now backend FastAPI scaffold, auth foundation, onboarding persistence, Telegram linking, and core agent shell.
 
 ---
 

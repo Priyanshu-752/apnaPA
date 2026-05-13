@@ -1,6 +1,6 @@
 # Frontend Dashboard Architecture
 
-**Status**: Static dummy mock implemented  
+**Status**: Route-based Next.js dummy scaffold implemented  
 **Source**: `../../plan.md`, `../../dashboard.html`
 
 ---
@@ -31,43 +31,26 @@ The frontend does not own business logic. It calls FastAPI for user state, domai
 
 ```text
 frontend/
-  app/
-    layout.tsx
-    page.tsx
-    login/
-    onboarding/
-    dashboard/
-    settings/
-  components/
-    ui/
-    layout/
-    forms/
-    agent/
-  modules/
-    auth/
-    onboarding/
-    dashboard/
-    health/
-    finance/
-    reminders/
-    memory/
-    settings/
-  stores/
-    auth-store.ts
-    conversation-store.ts
-    notification-store.ts
-    dashboard-store.ts
-  services/
-    api-client.ts
-    auth-service.ts
-    agent-service.ts
-    health-service.ts
-    finance-service.ts
-    reminder-service.ts
-  hooks/
-  lib/
-  types/
-  utils/
+  src/
+    app/
+      (auth)/
+        login/
+      (dashboard)/
+        dashboard/
+        health/
+        finance/
+        reminders/
+        memory/
+        settings/
+    components/
+      auth/
+      dashboard/
+      ui/
+    lib/
+    stores/
+    middleware.ts
+  public/
+  tests/
 ```
 
 ---
@@ -130,17 +113,19 @@ frontend/
 
 Implemented in `../../frontend/`:
 
-- Dependency-light static frontend mock.
-- Dashboard UI adapted from `../../dashboard.html`.
-- Local dummy state for login, onboarding, Telegram linking, dashboard modules, manual entry, and Dashboard Agent.
-- Dashboard, Health, Finance, and Reminders sections expanded to match the important prototype coverage in `../../dashboard.html`.
-- No API integration.
-- Node built-in tests for dummy data, Agent behavior, and HTML contracts.
+- Next.js App Router scaffold using `src/app`.
+- Route groups for `(auth)` and `(dashboard)`.
+- Protected routes via `src/middleware.ts` and a local demo session cookie.
+- Shared dashboard shell with responsive sidebar, topbar, dialogs, and route-based screen components.
+- Local dummy state for onboarding, Telegram linking, profile editing, dashboard modules, manual entry, and Dashboard Agent.
+- Dashboard, Health, Finance, Reminders, Memory, and Settings are now separate screens and URLs.
+- No API integration yet.
+- Node built-in tests for dummy data, Agent behavior, route contracts, and middleware presence.
 
 Run:
 
 ```bash
-npm.cmd start --prefix frontend
+npm.cmd run dev --prefix frontend
 npm.cmd test --prefix frontend
 ```
 
@@ -148,12 +133,10 @@ npm.cmd test --prefix frontend
 
 ## Next Implementation Slice
 
-When backend contracts are ready, migrate or replace this mock with the planned Next.js app:
+When backend contracts are ready, extend the current scaffold instead of replacing it:
 
-- Next.js app shell.
-- Tailwind and Shadcn setup.
-- Auth store and API client.
-- Login page with Firebase Google handoff placeholder or adapter.
-- Protected dashboard route shell.
-- Sidebar/topbar layout based on `dashboard.html`.
-- Dashboard overview using mock data first, then FastAPI-backed data.
+- Add Firebase Google handoff plus FastAPI auth exchange.
+- Add API client and TanStack Query.
+- Replace demo cookie auth with real session verification.
+- Connect route-based dashboard screens to FastAPI-backed data.
+- Add loading, empty, and error states around real server data modules.

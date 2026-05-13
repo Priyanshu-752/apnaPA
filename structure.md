@@ -10,21 +10,61 @@ PersonalAgent/
 |-- context.md
 |-- context_pipeline.md
 |-- dashboard.html
+|-- project_refresh_prompt.md
 |-- frontend/
+|   |-- .gitignore
 |   |-- README.md
-|   |-- index.html
+|   |-- components.json
+|   |-- global.d.ts
+|   |-- next-env.d.ts
+|   |-- next.config.mjs
 |   |-- package.json
-|   |-- scripts/
-|   |   `-- serve.mjs
-|   |-- src/
-|   |   |-- agent.js
-|   |   |-- app.js
-|   |   |-- dummy-data.js
-|   |   `-- styles.css
+|   |-- postcss.config.mjs
+|   |-- tailwind.config.ts
 |   `-- tests/
-|       |-- agent.test.mjs
-|       |-- dummy-data.test.mjs
-|       `-- html-contract.test.mjs
+|       |-- agent.test.ts
+|       |-- dummy-data.test.ts
+|       `-- next-contract.test.ts
+|   |-- public/
+|   |   `-- ap-mark.svg
+|   `-- src/
+|       |-- app/
+|       |   |-- globals.css
+|       |   |-- layout.tsx
+|       |   |-- page.tsx
+|       |   |-- (auth)/
+|       |   |   |-- layout.tsx
+|       |   |   `-- login/
+|       |   |       `-- page.tsx
+|       |   `-- (dashboard)/
+|       |       |-- layout.tsx
+|       |       |-- dashboard/page.tsx
+|       |       |-- health/page.tsx
+|       |       |-- finance/page.tsx
+|       |       |-- reminders/page.tsx
+|       |       |-- memory/page.tsx
+|       |       `-- settings/page.tsx
+|       |-- components/
+|       |   |-- auth/
+|       |   |   `-- login-screen.tsx
+|       |   |-- dashboard/
+|       |   |   |-- dashboard-shell.tsx
+|       |   |   |-- dialogs.tsx
+|       |   |   |-- navigation.ts
+|       |   |   |-- shared.tsx
+|       |   |   |-- sidebar.tsx
+|       |   |   |-- topbar.tsx
+|       |   |   `-- screens/
+|       |   `-- ui/
+|       |-- lib/
+|       |   |-- agent.ts
+|       |   |-- dummy-data.ts
+|       |   |-- schemas.ts
+|       |   |-- session.ts
+|       |   `-- utils.ts
+|       |-- stores/
+|       |   `-- app-store.ts
+|       `-- middleware.ts
 |-- instructions.md
 |-- learn/
 |   |-- README.md
@@ -110,7 +150,8 @@ PersonalAgent/
 | Product north star | `critical_prompt.md` |
 | Full master plan | `plan.md` |
 | Current project state | `context.md` |
-| Frontend mock | `frontend/` |
+| Frontend app | `frontend/src/` |
+| Documentation refresh prompt | `project_refresh_prompt.md` |
 | Learning docs | `learn/` |
 | Session workflow | `work_prompt.md` |
 | Documentation rules | `instructions.md` |

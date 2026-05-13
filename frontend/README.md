@@ -47,6 +47,7 @@ The tests use Node's built-in test runner through `tsx`.
 - Auth route group with `/login`.
 - Dashboard route group with separate pages for `/dashboard`, `/health`, `/finance`, `/reminders`, `/memory`, and `/settings`.
 - Protected route middleware using a local demo session cookie.
+- `src/app` App Router structure with shared dashboard shell and route-based screens.
 - Shared dashboard shell with sidebar, header, dialogs, and responsive mobile drawer behavior.
 - Dummy onboarding completion state.
 - Dummy Telegram link state.

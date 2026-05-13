@@ -3,7 +3,7 @@
 **Last Updated**: 2026-05-13  
 **Status**: Planned  
 **Total Test Files**: 3  
-**Total Test Cases**: 11
+**Total Test Cases**: 14
 
 ---
 
@@ -12,8 +12,8 @@
 | Metric | Value |
 | --- | --- |
 | Total Test Files | 3 |
-| Total Test Cases | 11 |
-| Passing | 11 |
+| Total Test Cases | 14 |
+| Passing | 14 |
 | Failing | 0 |
 | Skipped | 0 |
 | Flaky | 0 |
@@ -43,7 +43,7 @@
 
 | Area | Coverage Intent | Status |
 | --- | --- | --- |
-| Auth | Google login handoff, protected routes, logout | Planned |
+| Auth | Google login handoff, protected routes, logout | Partial |
 | Onboarding | Resume, validation, completion flow | Planned |
 | Dashboard | Overview, health, finance, reminders, goals, activity rendering | Planned |
 | Dashboard Agent | Open, send, response, confirmation flow, close | Planned |
@@ -59,9 +59,9 @@
 
 | Test File | What It Tests | Status |
 | --- | --- | --- |
-| `frontend/tests/dummy-data.test.mjs` | Navigation, complete MVP/prototype dummy data coverage, meal and expense entry specs | Passing |
-| `frontend/tests/agent.test.mjs` | Agent intent classification, confirmation drafts, dummy replies | Passing |
-| `frontend/tests/html-contract.test.mjs` | Required HTML roots/dialogs, prototype section parity, no API integration, module entrypoint | Passing |
+| `frontend/tests/dummy-data.test.ts` | Navigation, complete MVP/prototype dummy data coverage, meal and expense entry specs | Passing |
+| `frontend/tests/agent.test.ts` | Agent intent classification, confirmation drafts, dummy replies | Passing |
+| `frontend/tests/next-contract.test.ts` | Route groups, protected-flow shape, middleware guards, prototype section coverage, no API integration | Passing |
 
 Run:
 
@@ -93,9 +93,9 @@ npm.cmd test --prefix frontend
 
 | Test File | Module | Status | Notes |
 | --- | --- | --- | --- |
-| `frontend/tests/dummy-data.test.mjs` | Frontend dummy data | Passing | Node built-in test runner |
-| `frontend/tests/agent.test.mjs` | Frontend Agent mock | Passing | Confirms write-like intents require confirmation |
-| `frontend/tests/html-contract.test.mjs` | Frontend HTML shell | Passing | Confirms no API integration and protects prototype sections |
+| `frontend/tests/dummy-data.test.ts` | Frontend dummy data | Passing | Node built-in test runner |
+| `frontend/tests/agent.test.ts` | Frontend Agent mock | Passing | Confirms write-like intents require confirmation |
+| `frontend/tests/next-contract.test.ts` | Frontend route contract | Passing | Confirms guarded route shape and no API integration |
 
 ---
 
