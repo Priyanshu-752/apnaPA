@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Personal Manager Dashboard Prototype</title>
+  <title>apnaPA Dashboard Prototype</title>
   <style>
     :root {
       --bg: #f6f3ee;
@@ -48,6 +48,118 @@
 
     button {
       cursor: pointer;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .landing {
+      min-height: 100vh;
+      background: var(--bg);
+      display: grid;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .landing-shell {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 24px;
+    }
+
+    .landing-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .landing-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .landing-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.72fr);
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .hero-panel {
+      display: grid;
+      align-content: center;
+      gap: 22px;
+      min-height: 620px;
+      padding: clamp(22px, 5vw, 54px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, rgba(20, 124, 114, 0.12), transparent 44%),
+        linear-gradient(45deg, rgba(207, 91, 71, 0.10), transparent 42%),
+        #fffdfa;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-title {
+      max-width: 720px;
+      font-size: clamp(38px, 6vw, 72px);
+      line-height: 0.98;
+      font-weight: 880;
+    }
+
+    .hero-copy {
+      max-width: 620px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.58;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .feature-tile {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.72);
+      padding: 13px;
+      min-height: 104px;
+    }
+
+    .login-panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      display: grid;
+      align-content: start;
+      gap: 16px;
+    }
+
+    .auth-stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .google-mark {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: inline-grid;
+      place-items: center;
+      background: #ffffff;
+      color: #406a8e;
+      font-weight: 900;
+      border: 1px solid var(--line);
     }
 
     .app {
@@ -242,6 +354,19 @@
       gap: 8px;
     }
 
+    .user-chip {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fffdfa;
+      padding: 7px 10px;
+      font-size: 13px;
+      font-weight: 760;
+    }
+
     .btn {
       min-height: 38px;
       border-radius: var(--radius);
@@ -327,6 +452,31 @@
       display: grid;
       gap: 10px;
       min-height: 138px;
+    }
+
+    .setup-strip {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .setup-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .setup-step {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .setup-step:last-child {
+      border-bottom: 0;
     }
 
     .metric-top {
@@ -961,6 +1111,11 @@
     }
 
     @media (max-width: 1120px) {
+      .landing-grid,
+      .setup-strip {
+        grid-template-columns: 1fr;
+      }
+
       .grid.cols-4 {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -1002,6 +1157,23 @@
         padding: 16px;
       }
 
+      .landing {
+        padding: 16px;
+      }
+
+      .landing-nav {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hero-panel {
+        min-height: auto;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
       .topbar {
         align-items: flex-start;
         flex-direction: column;
@@ -1041,12 +1213,74 @@
   </style>
 </head>
 <body>
-  <div class="app">
+  <section class="landing" id="landingScreen">
+    <div class="landing-shell">
+      <nav class="landing-nav">
+        <div class="landing-brand">
+          <div class="brand-mark">ap</div>
+          <div>
+            <div class="brand-title" style="color: var(--ink);">apnaPA</div>
+            <div class="brand-subtitle" style="color: var(--muted);">Personal AI operating system</div>
+          </div>
+        </div>
+        <button class="btn" type="button" id="landingTelegramPreview"><span class="btn-icon">T</span> Telegram sync after login</button>
+      </nav>
+
+      <div class="landing-grid">
+        <section class="hero-panel">
+          <div>
+            <span class="pill teal">Google login + Telegram sync</span>
+          </div>
+          <h1 class="hero-title">apnaPA keeps your daily life in one conversation.</h1>
+          <p class="hero-copy">Track health, finance, routines, reminders, and goals through a memory-aware assistant. Sign in with Google, complete onboarding, then connect Telegram for notifications and everyday chat.</p>
+          <div class="feature-grid">
+            <article class="feature-tile">
+              <div class="small-label">Health</div>
+              <h3>Meals and goals</h3>
+              <p class="section-copy">Log meals manually or through Agent chat.</p>
+            </article>
+            <article class="feature-tile">
+              <div class="small-label">Finance</div>
+              <h3>Spend tracking</h3>
+              <p class="section-copy">Review daily, weekly, monthly, and custom ranges.</p>
+            </article>
+            <article class="feature-tile">
+              <div class="small-label">Telegram</div>
+              <h3>Sync notifications</h3>
+              <p class="section-copy">Link Telegram after login for reminders and chat.</p>
+            </article>
+          </div>
+        </section>
+
+        <aside class="login-panel">
+          <div>
+            <div class="small-label">Welcome to apnaPA</div>
+            <h2>Sign in to continue</h2>
+            <p class="section-copy">This prototype uses a dummy Google login. Telegram sync is connected after login for reminders and bot chat.</p>
+          </div>
+          <div class="auth-stack">
+            <button class="btn primary" type="button" id="googleLoginButton"><span class="google-mark">G</span> Continue with Google</button>
+            <button class="btn" type="button" id="demoLoginButton"><span class="btn-icon">D</span> Enter demo dashboard</button>
+          </div>
+          <div class="entry-note">
+            <div class="small-label">After login</div>
+            <div class="setup-list">
+              <div class="setup-step"><span>Complete onboarding</span><span class="pill amber">Setup</span></div>
+              <div class="setup-step"><span>Connect Telegram</span><span class="pill teal">Sync</span></div>
+              <div class="setup-step"><span>Start Agent chat</span><span class="pill green">Ready</span></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <div class="app hidden" id="dashboardApp">
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand-mark">PM</div>
+        <div class="brand-mark">ap</div>
         <div>
-          <div class="brand-title">Personal Manager</div>
+          <div class="brand-title">apnaPA</div>
           <div class="brand-subtitle">AI life operations</div>
         </div>
       </div>
@@ -1076,10 +1310,10 @@
         <div class="small-label">System status</div>
         <div class="sync-row">
           <span><span class="status-dot"></span></span>
-          <span>Telegram connected</span>
+          <span id="telegramSidebarStatus">Telegram sync pending</span>
         </div>
         <div class="sync-row">
-          <span>Memory sync</span>
+          <span>Google session</span>
           <strong>Live</strong>
         </div>
       </div>
@@ -1092,6 +1326,10 @@
           <h1 id="pageTitle">Daily command center</h1>
         </div>
         <div class="top-actions">
+          <span class="user-chip"><span class="status-dot"></span> Priyanshu via Google</span>
+          <button class="btn" type="button" id="connectTelegramButton">
+            <span class="btn-icon">T</span> Connect Telegram
+          </button>
           <button class="btn" type="button" data-entry-type="meal">
             <span class="btn-icon">+</span> Log meal
           </button>
@@ -1101,10 +1339,37 @@
           <button class="btn primary" type="button" id="openAgentButton">
             <span class="btn-icon">AI</span> Agent
           </button>
+          <button class="btn" type="button" id="logoutButton">
+            <span class="btn-icon">L</span> Logout
+          </button>
         </div>
       </header>
 
       <section class="view active" id="dashboard">
+        <div class="setup-strip" id="setupStrip">
+          <section class="card">
+            <div class="section-head">
+              <div>
+                <h2>Account setup</h2>
+                <p class="section-copy">Google login creates the apnaPA account. Telegram is linked after login for reminders, notifications, and bot chat.</p>
+              </div>
+              <span class="pill amber" id="setupState">2 steps left</span>
+            </div>
+            <div class="setup-list">
+              <div class="setup-step"><div><div class="row-title">Google account</div><div class="row-meta">Signed in as Priyanshu</div></div><span class="pill green">Done</span></div>
+              <div class="setup-step"><div><div class="row-title">Onboarding profile</div><div class="row-meta" id="onboardingMeta">Health, finance, reminders, and AI tone are not fully set.</div></div><button class="mini-btn" id="openOnboardingButton" type="button">Complete</button></div>
+              <div class="setup-step"><div><div class="row-title">Telegram sync</div><div class="row-meta" id="telegramSetupMeta">Not connected yet</div></div><button class="mini-btn" id="setupTelegramButton" type="button">Connect</button></div>
+            </div>
+          </section>
+          <section class="card insight">
+            <div class="insight-primary">
+              <div class="ai-badge">SETUP INSIGHT</div>
+              <h2>Finish Telegram sync</h2>
+              <p>After Telegram is linked, apnaPA can send reminders, receive voice notes, and keep dashboard plus Telegram conversations attached to the same user account.</p>
+            </div>
+          </section>
+        </div>
+
         <div class="grid cols-4">
           <article class="card metric">
             <div class="metric-top">
@@ -1633,6 +1898,79 @@
         </div>
       </div>
     </section>
+
+    <section class="dialog" id="telegramDialog" role="dialog" aria-modal="true" aria-labelledby="telegramDialogTitle">
+      <div class="dialog-head">
+        <div>
+          <div class="small-label">Telegram sync</div>
+          <h2 id="telegramDialogTitle">Connect Telegram</h2>
+          <p class="section-copy">This dummy flow represents generating a secure temporary token and opening the apnaPA Telegram bot.</p>
+        </div>
+        <button class="dialog-close" type="button" data-close-dialog aria-label="Close dialog">X</button>
+      </div>
+      <div class="dialog-body">
+        <div class="settings-form">
+          <div class="entry-note">
+            <div class="small-label">Secure link token</div>
+            <h2>/start APNA-2849</h2>
+            <p class="section-copy">In production this token expires quickly, is stored as a hash, and can only link one Telegram account to this authenticated user.</p>
+          </div>
+          <div class="setup-list">
+            <div class="setup-step"><span>Dashboard generates token</span><span class="pill green">Done</span></div>
+            <div class="setup-step"><span>User opens Telegram bot</span><span class="pill amber">Next</span></div>
+            <div class="setup-step"><span>Backend validates and links telegram_id</span><span class="pill teal">Mock</span></div>
+          </div>
+          <div class="form-actions">
+            <button class="btn" type="button" data-close-dialog>Cancel</button>
+            <button class="btn primary" type="button" id="confirmTelegramLink"><span class="btn-icon">T</span> Mark connected</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dialog wide" id="onboardingDialog" role="dialog" aria-modal="true" aria-labelledby="onboardingDialogTitle">
+      <div class="dialog-head">
+        <div>
+          <div class="small-label">Onboarding</div>
+          <h2 id="onboardingDialogTitle">Complete apnaPA profile</h2>
+          <p class="section-copy">This creates the initial AI profile, goals, reminder defaults, and memory context.</p>
+        </div>
+        <button class="dialog-close" type="button" data-close-dialog aria-label="Close dialog">X</button>
+      </div>
+      <div class="dialog-body">
+        <div class="dialog-grid">
+          <div class="settings-form">
+            <div class="grid cols-2">
+              <div class="field"><label for="onboardTimezone">Timezone</label><select id="onboardTimezone"><option>Asia/Calcutta</option><option>UTC</option></select></div>
+              <div class="field"><label for="onboardActivity">Activity level</label><select id="onboardActivity"><option>Moderate</option><option>Low</option><option>High</option></select></div>
+            </div>
+            <div class="grid cols-2">
+              <div class="field"><label for="onboardWeight">Weight</label><input id="onboardWeight" value="72 kg"></div>
+              <div class="field"><label for="onboardHeight">Height</label><input id="onboardHeight" value="175 cm"></div>
+            </div>
+            <div class="field"><label for="onboardDiet">Dietary preference</label><select id="onboardDiet"><option>High protein mixed diet</option><option>Vegetarian</option><option>Flexible</option></select></div>
+            <div class="grid cols-2">
+              <div class="field"><label for="onboardIncome">Monthly income</label><input id="onboardIncome" value="80,000"></div>
+              <div class="field"><label for="onboardSavings">Savings goal</label><input id="onboardSavings" value="20,000"></div>
+            </div>
+            <div class="field"><label for="onboardTone">Preferred AI tone</label><select id="onboardTone"><option>Direct and supportive</option><option>Detailed coach</option><option>Minimal reminders</option></select></div>
+          </div>
+          <aside class="suggestion-box">
+            <div>
+              <div class="small-label">Initialized after save</div>
+              <h3>Goals, reminders, memory</h3>
+              <p class="section-copy">apnaPA will create starter health goals, finance goals, reminder defaults, and user memory from these choices.</p>
+            </div>
+            <div class="setup-list">
+              <div class="setup-step"><span>Protein and calorie targets</span><span class="pill green">Suggested</span></div>
+              <div class="setup-step"><span>Monthly savings target</span><span class="pill amber">Editable</span></div>
+              <div class="setup-step"><span>Reminder windows</span><span class="pill teal">Ready</span></div>
+            </div>
+            <button class="btn primary" type="button" id="completeOnboardingButton"><span class="btn-icon">O</span> Save onboarding</button>
+          </aside>
+        </div>
+      </div>
+    </section>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -1649,6 +1987,8 @@
 
     const navButtons = document.querySelectorAll("[data-view-target]");
     const views = document.querySelectorAll(".view");
+    const landingScreen = document.getElementById("landingScreen");
+    const dashboardApp = document.getElementById("dashboardApp");
     const pageTitle = document.getElementById("pageTitle");
     const pageKicker = document.getElementById("pageKicker");
     const toast = document.getElementById("toast");
@@ -1676,8 +2016,19 @@
     const entryHelpTitle = document.getElementById("entryHelpTitle");
     const entryHelpCopy = document.getElementById("entryHelpCopy");
     const entryRequiredList = document.getElementById("entryRequiredList");
+    const telegramSidebarStatus = document.getElementById("telegramSidebarStatus");
+    const telegramSetupMeta = document.getElementById("telegramSetupMeta");
+    const onboardingMeta = document.getElementById("onboardingMeta");
+    const setupState = document.getElementById("setupState");
+    const connectTelegramButton = document.getElementById("connectTelegramButton");
+    const setupTelegramButton = document.getElementById("setupTelegramButton");
+    const confirmTelegramLink = document.getElementById("confirmTelegramLink");
+    const openOnboardingButton = document.getElementById("openOnboardingButton");
+    const completeOnboardingButton = document.getElementById("completeOnboardingButton");
     let activeGoalDomain = "health";
     let activeEntryType = "meal";
+    let telegramLinked = false;
+    let onboardingDone = false;
 
     function showToast(message) {
       toast.textContent = message;
@@ -1698,6 +2049,45 @@
       dialogBackdrop.classList.remove("open");
       dialogBackdrop.setAttribute("aria-hidden", "true");
       dialogs.forEach((dialog) => dialog.classList.remove("active"));
+    }
+
+    function enterDashboard() {
+      landingScreen.classList.add("hidden");
+      dashboardApp.classList.remove("hidden");
+      showToast("Signed in with Google. Welcome to apnaPA.");
+    }
+
+    function returnToLanding() {
+      closeDialog();
+      dashboardApp.classList.add("hidden");
+      landingScreen.classList.remove("hidden");
+      showToast("Logged out of the demo session.");
+    }
+
+    function updateSetupState() {
+      const remaining = Number(!telegramLinked) + Number(!onboardingDone);
+      setupState.textContent = remaining === 0 ? "Ready" : `${remaining} step${remaining === 1 ? "" : "s"} left`;
+      setupState.className = remaining === 0 ? "pill green" : "pill amber";
+    }
+
+    function markTelegramLinked() {
+      telegramLinked = true;
+      telegramSidebarStatus.textContent = "Telegram connected";
+      telegramSetupMeta.textContent = "Connected to @apnaPA_bot";
+      connectTelegramButton.innerHTML = '<span class="btn-icon">T</span> Telegram linked';
+      setupTelegramButton.textContent = "Linked";
+      updateSetupState();
+      closeDialog();
+      showToast("Telegram synced in prototype state.");
+    }
+
+    function markOnboardingComplete() {
+      onboardingDone = true;
+      onboardingMeta.textContent = "Profile, goals, reminders, and AI tone initialized.";
+      openOnboardingButton.textContent = "Done";
+      updateSetupState();
+      closeDialog();
+      showToast("Onboarding completed in prototype state.");
     }
 
     function openAgentDialog(seedMessage) {
@@ -1920,6 +2310,17 @@
       });
     });
 
+    document.getElementById("googleLoginButton").addEventListener("click", enterDashboard);
+    document.getElementById("demoLoginButton").addEventListener("click", enterDashboard);
+    document.getElementById("landingTelegramPreview").addEventListener("click", () => {
+      showToast("Telegram sync is available after Google login.");
+    });
+    document.getElementById("logoutButton").addEventListener("click", returnToLanding);
+    connectTelegramButton.addEventListener("click", () => openDialog("telegramDialog"));
+    setupTelegramButton.addEventListener("click", () => openDialog("telegramDialog"));
+    confirmTelegramLink.addEventListener("click", markTelegramLinked);
+    openOnboardingButton.addEventListener("click", () => openDialog("onboardingDialog"));
+    completeOnboardingButton.addEventListener("click", markOnboardingComplete);
     document.getElementById("openAgentButton").addEventListener("click", () => openAgentDialog());
     document.getElementById("healthAgentGoal").addEventListener("click", () => openAgentDialog("Help me set my health goal"));
     document.getElementById("financeAgentGoal").addEventListener("click", () => openAgentDialog("Help me set my finance goal"));
