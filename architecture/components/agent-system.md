@@ -1,6 +1,6 @@
 # Agent System Architecture
 
-**Status**: Planned  
+**Status**: Orchestrator scaffold implemented  
 **Source**: `../../plan.md`
 
 ---
@@ -126,3 +126,12 @@ Build an orchestrator shell before rich AI behavior:
 - Memory retriever interface.
 - Tool result and confirmation proposal schemas.
 - Unit tests for registry, routing, and confirmation-required write proposals.
+
+Current scaffold now exists in:
+
+- `../../backend/app/agents/base.py`
+- `../../backend/app/agents/registry.py`
+- `../../backend/app/agents/orchestrator/service.py`
+- `../../backend/app/agents/health/agent.py`
+- `../../backend/app/agents/finance/agent.py`
+- `../../backend/tests/test_agents.py`

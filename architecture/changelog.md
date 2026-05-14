@@ -11,3 +11,4 @@
 - Added `learn/` documentation for backend, FastAPI, agents, RAG, n8n, testing, and official resources.
 - Converted the frontend into a route-based Next.js App Router scaffold under `frontend/src/`.
 - Added auth and dashboard route groups, protected-route middleware, responsive dashboard shell, and TypeScript route-contract tests.
+- Added the first FastAPI backend scaffold with auth/session helpers, protected route dependencies, agent orchestrator stubs, workflow webhook contracts, and passing backend pytest coverage.

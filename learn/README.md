@@ -11,22 +11,24 @@ Read in this order:
 1. `backend/implementation-roadmap.md`
 2. `fastapi/core-concepts.md`
 3. `agents/how-agents-work.md`
-4. `rag/rag-memory-plan.md`
-5. `n8n/workflow-role.md`
-6. `testing/dummy-first-testing.md`
-7. `resources/official-links.md`
+4. `n8n/workflow-role.md`
+5. `n8n/connecting-n8n-to-backend.md`
+6. `rag/rag-memory-plan.md`
+7. `testing/dummy-first-testing.md`
+8. `resources/official-links.md`
+9. `resources/video-guides.md`
 
 ---
 
 ## Current Learning Phase
 
-We are in the dummy-first phase:
+We are in the scaffolded backend phase:
 
 - Frontend uses local dummy data.
-- Agent replies are deterministic mock replies.
-- No FastAPI API integration yet.
-- Backend and agent docs explain what will be implemented next.
-- Tests validate contracts before real services are connected.
+- Backend now has a real FastAPI scaffold under `backend/`.
+- Auth, protected dependencies, route groups, workflow webhook guards, and agent contracts now exist.
+- Agent replies in the frontend are still local mocks until the frontend is wired to FastAPI.
+- Tests now validate backend contracts before real persistence and model calls are connected.
 
 ---
 

@@ -1,6 +1,6 @@
 # Backend Core Architecture
 
-**Status**: Planned  
+**Status**: Initial FastAPI scaffold implemented  
 **Source**: `../../plan.md`
 
 ---
@@ -157,3 +157,11 @@ Build the backend skeleton before domain features:
 - Unit tests for token/session helpers and route shape.
 
 The first slice should not implement full Telegram, memory, or agent behavior yet.
+
+Current scaffold now exists in:
+
+- `../../backend/app/main.py`
+- `../../backend/app/api/routes/`
+- `../../backend/app/auth/`
+- `../../backend/app/agents/`
+- `../../backend/tests/`

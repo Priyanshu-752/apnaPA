@@ -24,6 +24,8 @@ n8n is the automation layer. It should schedule and deliver work, but it should 
 - reading and writing domain state.
 - creating events.
 
+In the current scaffold, this contract starts in `backend/app/api/routes/workflows.py`.
+
 ---
 
 ## Webhook Pattern
@@ -38,6 +40,11 @@ n8n scheduled trigger
   -> n8n sends Telegram or email
   -> n8n reports success/failure
 ```
+
+Current scaffold route examples:
+
+- `POST /api/workflows/reminders/trigger`
+- `POST /api/workflows/delivery-report`
 
 ---
 
@@ -68,9 +75,17 @@ Official reference: n8n webhook credentials docs list the supported webhook auth
 
 ## First n8n Code We Will Build Later
 
-- FastAPI webhook route group.
+Implemented now:
+
+- FastAPI workflow route group.
 - shared webhook secret setting.
-- request validation dependency.
 - reminder trigger contract.
 - delivery result contract.
 - tests for accepted and rejected webhook calls.
+
+Still later:
+
+- per-workflow signatures.
+- retry-safe idempotency keys.
+- real reminder fanout to Telegram or email.
+- workflow audit events.

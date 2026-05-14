@@ -39,6 +39,9 @@ Use official docs first. Add short notes here when a resource directly supports 
 
 ## OpenAI And Agents
 
+- Agents SDK guide: https://platform.openai.com/docs/guides/agents-sdk  
+  Use for the modern OpenAI agent runtime concepts, handoffs, tracing, and guardrails.
+
 - Function calling and Structured Outputs: https://platform.openai.com/docs/guides/function-calling/function-calling-with-structured-outputs  
   Use for typed tool calls and schema-bound agent outputs.
 
@@ -64,3 +67,6 @@ Use official docs first. Add short notes here when a resource directly supports 
 
 - Webhook credentials: https://docs.n8n.io/integrations/builtin/credentials/webhook/  
   Use for webhook authentication options such as header auth and JWT auth.
+
+- Video courses: https://docs.n8n.io/video-courses/  
+  Use to find the official n8n YouTube beginner and advanced playlists.

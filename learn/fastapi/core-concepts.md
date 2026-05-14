@@ -1,6 +1,6 @@
 # FastAPI Core Concepts For apnaPA
 
-FastAPI is the backend framework planned for apnaPA.
+FastAPI is now the backend scaffold used in apnaPA.
 
 ---
 
@@ -8,7 +8,7 @@ FastAPI is the backend framework planned for apnaPA.
 
 The app is the main object that receives requests and returns responses.
 
-In apnaPA, the app will:
+In apnaPA, the app:
 
 - register route groups.
 - configure middleware.
@@ -16,11 +16,15 @@ In apnaPA, the app will:
 - attach observability.
 - serve OpenAPI docs in development.
 
+Current file:
+
+- `backend/app/main.py`
+
 ---
 
 ## APIRouter
 
-Routes should be split by domain:
+Routes are split by domain:
 
 - `auth`
 - `onboarding`
@@ -33,6 +37,7 @@ Routes should be split by domain:
 - `memory`
 - `settings`
 - `admin`
+- `workflows`
 
 Why this matters:
 
@@ -43,13 +48,20 @@ Why this matters:
 
 Official reference: FastAPI's bigger applications guide explains this multi-file routing pattern with `APIRouter`.
 
+Current files:
+
+- `backend/app/api/routes/__init__.py`
+- `backend/app/api/routes/auth.py`
+- `backend/app/api/routes/agent.py`
+- `backend/app/api/routes/workflows.py`
+
 ---
 
 ## Dependencies
 
 Dependencies are functions FastAPI runs before a route.
 
-apnaPA will use dependencies for:
+apnaPA uses dependencies for:
 
 - loading settings.
 - opening database sessions.
@@ -57,8 +69,13 @@ apnaPA will use dependencies for:
 - validating access tokens.
 - loading the current user.
 - enforcing Telegram linked-user checks.
+- validating n8n workflow secrets.
 
 Official reference: FastAPI's dependency injection guide explains the `Depends` pattern.
+
+Current file:
+
+- `backend/app/api/dependencies.py`
 
 ---
 
@@ -66,7 +83,7 @@ Official reference: FastAPI's dependency injection guide explains the `Depends` 
 
 Schemas validate inputs and outputs.
 
-apnaPA will use schemas for:
+apnaPA uses schemas for:
 
 - auth requests.
 - onboarding steps.
@@ -75,6 +92,7 @@ apnaPA will use schemas for:
 - agent responses.
 - confirmation proposals.
 - dashboard summaries.
+- workflow trigger payloads.
 
 Why this matters:
 
@@ -100,19 +118,30 @@ apnaPA will use settings for:
 
 Official reference: Pydantic Settings documents loading typed configuration from environment variables and dotenv/secrets sources.
 
+Current file:
+
+- `backend/app/config/settings.py`
+
 ---
 
 ## Testing
 
 FastAPI routes can be tested without launching an external server by using `TestClient`.
 
-apnaPA will test:
+apnaPA currently tests:
 
 - health route.
 - auth flow shape.
 - protected route dependency.
-- onboarding persistence.
-- Telegram linking rules.
-- agent route behavior with dummy tools.
+- agent routing behavior.
+- workflow secret validation.
 
 Official reference: FastAPI's testing guide explains `TestClient` and pytest-based tests.
+
+Current tests:
+
+- `backend/tests/test_app.py`
+- `backend/tests/test_auth.py`
+- `backend/tests/test_tokens.py`
+- `backend/tests/test_agents.py`
+- `backend/tests/test_workflows.py`

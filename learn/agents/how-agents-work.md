@@ -36,6 +36,10 @@ It owns:
 - enforcing confirmation rules.
 - shaping the final response.
 
+Current file:
+
+- `backend/app/agents/orchestrator/service.py`
+
 ---
 
 ## Domain Agents
@@ -47,6 +51,11 @@ Domain agents do focused work:
 - Memory Agent or Service: preferences, goals, routines, summaries, retrieval.
 
 Sub-agents do not send independent user messages. They return structured outputs to the orchestrator.
+
+Current files:
+
+- `backend/app/agents/health/agent.py`
+- `backend/app/agents/finance/agent.py`
 
 ---
 
@@ -83,6 +92,8 @@ Examples:
 
 The frontend mock already demonstrates this with deterministic confirmation drafts in `frontend/src/lib/agent.ts`.
 
+The backend scaffold now mirrors that rule in `backend/app/agents/orchestrator/service.py`, where meal and expense-style requests return confirmation-required proposals instead of direct writes.
+
 ---
 
 ## Structured Outputs
@@ -95,11 +106,20 @@ Official reference: OpenAI function calling and Structured Outputs describe conn
 
 ## First Agent Code We Will Build Later
 
+Implemented now:
+
 - base agent interface.
 - intent enum.
 - execution context schema.
 - registry.
 - orchestrator shell.
 - health and finance stubs.
-- dummy tools.
 - tests that prove write proposals require confirmation.
+
+Still later:
+
+- OpenAI model calls.
+- memory ranking and retrieval policies.
+- prompt versioning.
+- AI usage logs and action logs.
+- durable tool execution against database services.
