@@ -1,5 +1,12 @@
 # Architecture Changelog
 
+## 2026-05-14
+
+- Refreshed architecture docs to reflect that both the frontend and backend scaffolds now exist.
+- Recorded the split-context workflow using `context.md`, `context_backend.md`, and `context_frontend.md`.
+- Updated backend architecture notes to distinguish implemented scaffold pieces from target long-term structure.
+- Updated frontend architecture notes to reflect the current single Zustand store and still-planned API data layer.
+
 ## 2026-05-13
 
 - Added root-level agentic context pipeline for apnaPA.

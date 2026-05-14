@@ -1,6 +1,6 @@
 # apnaPA Project Structure
 
-**Last Updated**: 2026-05-13
+**Last Updated**: 2026-05-14
 
 ---
 
@@ -8,81 +8,13 @@
 PersonalAgent/
 |-- critical_prompt.md
 |-- context.md
+|-- context_backend.md
+|-- context_frontend.md
 |-- context_pipeline.md
 |-- dashboard.html
-|-- project_refresh_prompt.md
-|-- frontend/
-|   |-- .gitignore
-|   |-- README.md
-|   |-- components.json
-|   |-- global.d.ts
-|   |-- next-env.d.ts
-|   |-- next.config.mjs
-|   |-- package.json
-|   |-- postcss.config.mjs
-|   |-- tailwind.config.ts
-|   `-- tests/
-|       |-- agent.test.ts
-|       |-- dummy-data.test.ts
-|       `-- next-contract.test.ts
-|   |-- public/
-|   |   `-- ap-mark.svg
-|   `-- src/
-|       |-- app/
-|       |   |-- globals.css
-|       |   |-- layout.tsx
-|       |   |-- page.tsx
-|       |   |-- (auth)/
-|       |   |   |-- layout.tsx
-|       |   |   `-- login/
-|       |   |       `-- page.tsx
-|       |   `-- (dashboard)/
-|       |       |-- layout.tsx
-|       |       |-- dashboard/page.tsx
-|       |       |-- health/page.tsx
-|       |       |-- finance/page.tsx
-|       |       |-- reminders/page.tsx
-|       |       |-- memory/page.tsx
-|       |       `-- settings/page.tsx
-|       |-- components/
-|       |   |-- auth/
-|       |   |   `-- login-screen.tsx
-|       |   |-- dashboard/
-|       |   |   |-- dashboard-shell.tsx
-|       |   |   |-- dialogs.tsx
-|       |   |   |-- navigation.ts
-|       |   |   |-- shared.tsx
-|       |   |   |-- sidebar.tsx
-|       |   |   |-- topbar.tsx
-|       |   |   `-- screens/
-|       |   `-- ui/
-|       |-- lib/
-|       |   |-- agent.ts
-|       |   |-- dummy-data.ts
-|       |   |-- schemas.ts
-|       |   |-- session.ts
-|       |   `-- utils.ts
-|       |-- stores/
-|       |   `-- app-store.ts
-|       `-- middleware.ts
 |-- instructions.md
-|-- learn/
-|   |-- README.md
-|   |-- agents/
-|   |   `-- how-agents-work.md
-|   |-- backend/
-|   |   `-- implementation-roadmap.md
-|   |-- fastapi/
-|   |   `-- core-concepts.md
-|   |-- n8n/
-|   |   `-- workflow-role.md
-|   |-- rag/
-|   |   `-- rag-memory-plan.md
-|   |-- resources/
-|   |   `-- official-links.md
-|   `-- testing/
-|       `-- dummy-first-testing.md
 |-- plan.md
+|-- project_refresh_prompt.md
 |-- structure.md
 |-- work_prompt.md
 |
@@ -101,12 +33,39 @@ PersonalAgent/
 |-- audits/
 |   `-- README.md
 |
+|-- backend/
+|   |-- .env.example
+|   |-- README.md
+|   |-- SETUP.md
+|   |-- main.py
+|   |-- requirements.txt
+|   |-- __init__.py
+|   |-- app/
+|   |   |-- __init__.py
+|   |   |-- main.py
+|   |   |-- agents/
+|   |   |   |-- base.py
+|   |   |   |-- registry.py
+|   |   |   |-- finance/
+|   |   |   |-- health/
+|   |   |   |-- memory/
+|   |   |   `-- orchestrator/
+|   |   |-- api/
+|   |   |   `-- routes/
+|   |   |-- auth/
+|   |   |-- config/
+|   |   |-- database/
+|   |   `-- schemas/
+|   `-- tests/
+|       |-- test_agents.py
+|       |-- test_app.py
+|       |-- test_auth.py
+|       |-- test_tokens.py
+|       `-- test_workflows.py
+|
 |-- context_checkpoints/
 |   |-- README.md
-|   |-- context_checkpoint_13-05-2026-11-14AM.md
-|   |-- context_checkpoint_13-05-2026-11-27AM.md
-|   |-- context_checkpoint_13-05-2026-11-40AM.md
-|   `-- context_checkpoint_13-05-2026-12-08PM.md
+|   `-- context_checkpoint_*.md
 |
 |-- decisions/
 |   |-- ADR-001-system-ownership-boundaries.md
@@ -119,15 +78,53 @@ PersonalAgent/
 |-- errors/
 |   `-- README.md
 |
+|-- frontend/
+|   |-- README.md
+|   |-- components.json
+|   |-- global.d.ts
+|   |-- next-env.d.ts
+|   |-- next.config.mjs
+|   |-- package.json
+|   |-- postcss.config.mjs
+|   |-- tailwind.config.ts
+|   |-- tsconfig.json
+|   |-- public/
+|   |-- scripts/
+|   |-- src/
+|   |   |-- app/
+|   |   |   |-- (auth)/
+|   |   |   |-- (dashboard)/
+|   |   |   |-- globals.css
+|   |   |   |-- layout.tsx
+|   |   |   `-- page.tsx
+|   |   |-- components/
+|   |   |   |-- auth/
+|   |   |   |-- dashboard/
+|   |   |   `-- ui/
+|   |   |-- lib/
+|   |   |-- stores/
+|   |   `-- middleware.ts
+|   `-- tests/
+|       |-- agent.test.ts
+|       |-- dummy-data.test.ts
+|       `-- next-contract.test.ts
+|
 |-- knowledgebase/
 |   `-- README.md
 |
+|-- learn/
+|   |-- README.md
+|   |-- agents/
+|   |-- backend/
+|   |-- fastapi/
+|   |-- n8n/
+|   |-- rag/
+|   |-- resources/
+|   `-- testing/
+|
 |-- logs/
 |   |-- README.md
-|   |-- 20260513_1114_context_pipeline_setup.md
-|   |-- 20260513_1127_frontend_backend_agent_architecture.md
-|   |-- 20260513_1140_frontend_mock_and_learning_docs.md
-|   `-- 20260513_1208_frontend_prototype_parity.md
+|   `-- YYYYMMDD_HHMM_*.md
 |
 |-- plans/
 |   |-- README.md
@@ -138,6 +135,7 @@ PersonalAgent/
     |-- index.md
     `-- modules/
         |-- README.md
+        |-- backend.md
         `-- frontend.md
 ```
 
@@ -149,8 +147,12 @@ PersonalAgent/
 | --- | --- |
 | Product north star | `critical_prompt.md` |
 | Full master plan | `plan.md` |
-| Current project state | `context.md` |
+| Whole-app state | `context.md` |
+| Backend state | `context_backend.md` |
+| Frontend state | `context_frontend.md` |
+| Backend app | `backend/app/` |
 | Frontend app | `frontend/src/` |
+| Backend setup guide | `backend/SETUP.md` |
 | Documentation refresh prompt | `project_refresh_prompt.md` |
 | Learning docs | `learn/` |
 | Session workflow | `work_prompt.md` |
@@ -169,4 +171,4 @@ PersonalAgent/
 
 ---
 
-Update this file when adding top-level folders or significantly changing the project layout.
+Update this file when adding top-level folders or significantly changing key backend or frontend layout.

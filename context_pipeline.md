@@ -18,7 +18,7 @@ This project uses a file-based context pipeline so human and AI coding sessions 
 | Layer | Files |
 | --- | --- |
 | Vision | `critical_prompt.md`, `plan.md` |
-| State | `context.md`, `context_checkpoints/`, `structure.md` |
+| State | `context.md`, `context_backend.md`, `context_frontend.md`, `context_checkpoints/`, `structure.md` |
 | Process | `instructions.md`, `work_prompt.md`, `context_pipeline.md` |
 | Planning | `plans/` |
 | Architecture | `architecture/` |
@@ -38,9 +38,10 @@ This project uses a file-based context pipeline so human and AI coding sessions 
 
 1. Read `critical_prompt.md`.
 2. Read `context.md`.
-3. Review the latest file in `context_checkpoints/` if resuming.
-4. Review relevant plans in `plans/`.
-5. Use `plan.md` when full product, schema, API, or architecture detail is needed.
+3. Read `context_backend.md` or `context_frontend.md` for the surface you are touching.
+4. Review the latest file in `context_checkpoints/` if resuming.
+5. Review relevant plans in `plans/`.
+6. Use `plan.md` when full product, schema, API, or architecture detail is needed.
 
 ### Plan
 
@@ -62,8 +63,9 @@ This project uses a file-based context pipeline so human and AI coding sessions 
 1. Create a session log in `logs/`.
 2. Create a checkpoint in `context_checkpoints/`.
 3. Update `context.md`.
-4. Update `structure.md` if top-level structure changed.
-5. Use `project_refresh_prompt.md` when a major implementation step has changed multiple docs or architecture notes.
+4. Update `context_backend.md` and or `context_frontend.md` when that implementation surface changes.
+5. Update `structure.md` if top-level structure changed.
+6. Use `project_refresh_prompt.md` when a major implementation step has changed multiple docs or architecture notes.
 
 ---
 
@@ -84,7 +86,8 @@ This project uses a file-based context pipeline so human and AI coding sessions 
 
 - `plan.md` remains the long-form master plan.
 - `critical_prompt.md` captures the durable product north star.
-- `context.md` captures current working state, not every detail.
+- `context.md` captures whole-app working state, not every detail.
+- `context_backend.md` and `context_frontend.md` hold surface-specific implementation state.
 - `architecture/` changes with architecture implementation.
 - `docs/` are for completed user-facing or operator-facing features.
 - `knowledgebase/` requires citations or local proof.

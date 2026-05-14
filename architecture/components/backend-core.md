@@ -1,6 +1,6 @@
 # Backend Core Architecture
 
-**Status**: Initial FastAPI scaffold implemented  
+**Status**: FastAPI scaffold, auth foundation, and agent routing stubs implemented  
 **Source**: `../../plan.md`
 
 ---
@@ -30,7 +30,7 @@ Firebase validates Google identity only. Telegram and the dashboard are channels
 
 ---
 
-## Directory Shape
+## Target Directory Shape
 
 ```text
 backend/
@@ -141,24 +141,68 @@ backend/
 
 ---
 
-## First Implementation Slice
+## Current Implemented Shape
 
-Build the backend skeleton before domain features:
+```text
+backend/
+  app/
+    api/
+      routes/
+    auth/
+      firebase.py
+      sessions.py
+      tokens.py
+    agents/
+      base.py
+      registry.py
+      orchestrator/
+      health/
+      finance/
+      memory/
+    config/
+      settings.py
+    database/
+      session.py
+    schemas/
+    main.py
+  tests/
+  main.py
+  README.md
+  SETUP.md
+```
 
-- Settings loader.
-- FastAPI app factory or `main.py`.
+---
+
+## Current Implementation Slice
+
+Implemented today:
+
+- Settings loader with `.env` support.
+- FastAPI app factory and route registration.
 - Health check route.
 - Database session placeholder.
-- Auth schemas.
-- Firebase verification adapter interface.
-- JWT helper.
-- Session service interface.
+- Auth schemas and request or response models.
+- Dummy Firebase verification adapter.
+- JWT helper and in-memory session service.
 - Auth routes with dependency boundaries.
-- Unit tests for token/session helpers and route shape.
+- Agent base contract, registry, orchestrator, health agent, finance agent, and memory retriever stub.
+- Workflow webhook secret validation routes.
+- Backend tests for app boot, auth flow shape, token helpers, agent routing, and workflow secret checks.
 
-The first slice should not implement full Telegram, memory, or agent behavior yet.
+---
 
-Current scaffold now exists in:
+## Next Implementation Slice
+
+Build persistence and integration behind the existing contract surface:
+
+- Replace the dummy Firebase verifier with real Firebase Admin verification.
+- Add PostgreSQL models and migrations.
+- Replace the database placeholder with real async session management.
+- Persist users, providers, sessions, onboarding state, and Telegram link records.
+- Add real service-layer logic behind onboarding, dashboard, reminders, goals, and settings routes.
+- Expand tests from scaffold coverage to persistence and contract behavior.
+
+Current scaffold exists in:
 
 - `../../backend/app/main.py`
 - `../../backend/app/api/routes/`

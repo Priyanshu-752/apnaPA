@@ -1,7 +1,7 @@
 # apnaPA Architecture
 
-**Last Updated**: 2026-05-13  
-**Status**: Target architecture expanded, frontend scaffold implemented  
+**Last Updated**: 2026-05-14  
+**Status**: Target architecture defined, frontend and backend scaffolds implemented  
 **Source**: `../plan.md`
 
 ---
@@ -71,7 +71,7 @@ Component deep dives:
 
 ---
 
-## Planned Backend Shape
+## Target Backend Shape
 
 ```text
 backend/
@@ -98,7 +98,7 @@ backend/
 
 ---
 
-## Planned Frontend Shape
+## Target Frontend Shape
 
 ```text
 frontend/
@@ -117,12 +117,13 @@ frontend/
 ## Current State
 
 - Product architecture is planned in detail.
-- Backend, frontend, and agent architecture docs are now split into component plans.
+- Backend, frontend, and agent architecture docs are split into component plans.
 - System data flows are documented in `diagrams/system-data-flow.md`.
-- Dashboard HTML prototype exists.
-- Frontend application scaffold exists as a route-based Next.js app with protected dashboard routes and local dummy state.
-- Backend application scaffold is not yet created.
-- First implementation priority is now backend FastAPI scaffold, auth foundation, onboarding persistence, Telegram linking, and core agent shell.
+- Dashboard HTML prototype remains the frontend visual baseline.
+- Frontend application scaffold exists as a route-based Next.js app with protected dashboard routes, local dummy state, manual entry dialogs, and dashboard-agent mock behavior.
+- Backend application scaffold exists as a FastAPI app with settings loading, auth/session helpers, route registration, protected dependencies, workflow secret validation, and agent routing stubs.
+- The current implementation boundary is clear: route and contract scaffolds exist across both surfaces, but persistence and live integrations are still placeholder.
+- The next architecture priority is moving backend contracts from placeholder to real persistence and identity verification without breaking current frontend route boundaries.
 
 ---
 

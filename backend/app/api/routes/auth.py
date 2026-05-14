@@ -26,6 +26,7 @@ async def exchange_google_token(
     session, refresh_token = sessions.create_session(identity)
     access_token = create_access_token(user_id=session.user.user_id, session_id=session.session_id, settings=settings)
     return SessionResponse(
+        message=f"Signed in successfully as {session.user.display_name}.",
         user=session.user,
         tokens=sessions.create_token_bundle(session, refresh_token, access_token),
     )
@@ -43,6 +44,7 @@ async def refresh_session(
     session, next_refresh = rotated
     access_token = create_access_token(user_id=session.user.user_id, session_id=session.session_id, settings=settings)
     return SessionResponse(
+        message="Session refreshed successfully.",
         user=session.user,
         tokens=sessions.create_token_bundle(session, next_refresh, access_token),
     )

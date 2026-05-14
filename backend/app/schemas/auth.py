@@ -28,5 +28,6 @@ class TokenBundle(BaseModel):
 
 
 class SessionResponse(BaseModel):
+    message: str | None = None
     user: UserProfile
     tokens: TokenBundle

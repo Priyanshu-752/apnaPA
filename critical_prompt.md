@@ -1,7 +1,7 @@
 # apnaPA Project Vision
 
 **Project**: apnaPA AI Personal Manager  
-**Status**: Frontend route scaffold ready, backend not started  
+**Status**: Frontend route scaffold ready, backend scaffold implemented  
 **Source of Truth**: `plan.md`
 
 ---
@@ -27,6 +27,8 @@ Build a multi-user AI platform where FastAPI owns identity, product state, AI or
 Both Telegram and the dashboard Agent use the same backend orchestrator, memory retrieval, typed tools, confirmation rules, and user-scoped data.
 
 The current frontend already reflects this at the routing level: auth is separated from protected dashboard screens, and the dashboard surface is split into route-based screens instead of a single-page mock.
+
+The current backend already reflects this at the scaffold level: FastAPI owns app boot, auth/session helpers, protected dependencies, route registration, agent routing stubs, and workflow webhook contracts.
 
 ---
 

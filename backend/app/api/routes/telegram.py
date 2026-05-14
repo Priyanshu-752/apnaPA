@@ -3,7 +3,8 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 
-from backend.app.api.dependencies import get_current_user
+from backend.app.api.dependencies import get_current_user, get_session_service
+from backend.app.auth.sessions import InMemorySessionService
 from backend.app.config.settings import Settings, get_settings
 from backend.app.schemas.auth import UserProfile
 from backend.app.schemas.common import MessageResponse
@@ -22,15 +23,19 @@ async def create_link_token(
 @router.post("/link/confirm", response_model=MessageResponse)
 async def confirm_link(
     current_user: Annotated[UserProfile, Depends(get_current_user)],
+    sessions: Annotated[InMemorySessionService, Depends(get_session_service)],
 ) -> MessageResponse:
-    return MessageResponse(message=f"Telegram linking placeholder accepted for {current_user.user_id}.")
+    sessions.set_telegram_linked(current_user.user_id, linked=True)
+    return MessageResponse(message="Telegram connected successfully.")
 
 
 @router.post("/unlink", response_model=MessageResponse)
 async def unlink_telegram(
     current_user: Annotated[UserProfile, Depends(get_current_user)],
+    sessions: Annotated[InMemorySessionService, Depends(get_session_service)],
 ) -> MessageResponse:
-    return MessageResponse(message=f"Telegram unlink placeholder accepted for {current_user.user_id}.")
+    sessions.set_telegram_linked(current_user.user_id, linked=False)
+    return MessageResponse(message="Telegram disconnected successfully.")
 
 
 @router.get("/link/status", response_model=TelegramLinkStatusResponse)

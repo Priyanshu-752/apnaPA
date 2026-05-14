@@ -1,7 +1,7 @@
 # Frontend Test Module
 
 **Status**: Active  
-**Last Updated**: 2026-05-13
+**Last Updated**: 2026-05-14
 
 ---
 
@@ -39,3 +39,4 @@ fail 0
 - No accessibility audit yet.
 - No responsive screenshot test yet.
 - No browser-level route navigation test yet.
+- No API-integration coverage yet because the frontend still intentionally avoids FastAPI calls.

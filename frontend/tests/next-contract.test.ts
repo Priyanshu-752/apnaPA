@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 
 const dashboardPage = readFileSync(new URL("../src/app/(dashboard)/dashboard/page.tsx", import.meta.url), "utf8");
 const shell = readFileSync(new URL("../src/components/dashboard/dashboard-shell.tsx", import.meta.url), "utf8");
+const loginScreen = readFileSync(new URL("../src/components/auth/login-screen.tsx", import.meta.url), "utf8");
 const dashboardScreen = readFileSync(new URL("../src/components/dashboard/screens/dashboard-screen.tsx", import.meta.url), "utf8");
 const shared = readFileSync(new URL("../src/components/dashboard/shared.tsx", import.meta.url), "utf8");
 const healthScreen = readFileSync(new URL("../src/components/dashboard/screens/health-screen.tsx", import.meta.url), "utf8");
@@ -13,6 +14,8 @@ const settingsScreen = readFileSync(new URL("../src/components/dashboard/screens
 const dialogs = readFileSync(new URL("../src/components/dashboard/dialogs.tsx", import.meta.url), "utf8");
 const middleware = readFileSync(new URL("../src/middleware.ts", import.meta.url), "utf8");
 const rootPage = readFileSync(new URL("../src/app/page.tsx", import.meta.url), "utf8");
+const authGoogleRoute = readFileSync(new URL("../src/app/api/auth/google/route.ts", import.meta.url), "utf8");
+const bootstrapRoute = readFileSync(new URL("../src/app/api/app/bootstrap/route.ts", import.meta.url), "utf8");
 const packageJson = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
 
 test("next app router renders the dashboard component", () => {
@@ -52,7 +55,9 @@ test("frontend is split into guarded auth and dashboard flows", () => {
   assert.match(rootPage, /redirect/);
 });
 
-test("frontend still avoids API integration in the dummy pass", () => {
-  assert.doesNotMatch(dashboardScreen, /fetch\(/);
-  assert.doesNotMatch(dashboardScreen, /\/api\//);
+test("frontend now includes session-backed auth and bootstrap routes", () => {
+  assert.match(loginScreen, /accounts\.google\.com/);
+  assert.match(authGoogleRoute, /\/api\/auth\/google/);
+  assert.match(bootstrapRoute, /\/api\/dashboard\/overview/);
+  assert.match(shell, /AppSessionBootstrap/);
 });

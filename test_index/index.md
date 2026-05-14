@@ -1,9 +1,9 @@
 # apnaPA Test Index
 
-**Last Updated**: 2026-05-13  
-**Status**: Planned  
-**Total Test Files**: 3  
-**Total Test Cases**: 14
+**Last Updated**: 2026-05-14  
+**Status**: Active  
+**Total Test Files**: 8  
+**Total Test Cases**: 26
 
 ---
 
@@ -11,47 +11,30 @@
 
 | Metric | Value |
 | --- | --- |
-| Total Test Files | 3 |
-| Total Test Cases | 14 |
-| Passing | 14 |
+| Total Test Files | 8 |
+| Total Test Cases | 26 |
+| Passing | 26 |
 | Failing | 0 |
 | Skipped | 0 |
 | Flaky | 0 |
 
 ---
 
-## Planned Backend Tests
+## Active Backend Tests
 
-| Area | Coverage Intent | Status |
+| Test File | What It Tests | Status |
 | --- | --- | --- |
-| Auth | Firebase token validation adapter, session creation, refresh token rotation, logout | Planned |
-| Onboarding | Step persistence, completion, default goal/reminder initialization | Planned |
-| Telegram Linking | Token creation, expiry, duplicate protection, unlink, reconnect | Planned |
-| Telegram Webhook | Webhook guardrails, linked-user resolution, text message handling | Planned |
-| Health | Meal parsing, nutrition calculation, log persistence, daily state updates | Planned |
-| Finance | Expense parsing, categorization, log persistence, summaries | Planned |
-| Daily State | Aggregation from health, finance, goals, and reminders | Planned |
-| Goals | Suggestions, validation, confirmation handling, create/update flows | Planned |
-| Memory | Save, retrieve, summarize, user isolation, vector lookup interfaces | Planned |
-| Agent Chat | Intent routing, structured outputs, confirmation requirements, fallback behavior | Planned |
-| Events | Expected events emitted after successful state changes | Planned |
-| Workers | Idempotency, retries, dead-letter handling later | Planned |
+| `backend/tests/test_app.py` | App boot health route and major route-group registration | Passing |
+| `backend/tests/test_auth.py` | Google exchange shape, protected `/me`, refresh rotation | Passing |
+| `backend/tests/test_tokens.py` | Access-token round trip and refresh-token rotation behavior | Passing |
+| `backend/tests/test_agents.py` | Registry contents and orchestrator routing for meal and expense messages | Passing |
+| `backend/tests/test_workflows.py` | Workflow shared-secret rejection and acceptance | Passing |
 
----
+Run:
 
-## Planned Frontend Tests
-
-| Area | Coverage Intent | Status |
-| --- | --- | --- |
-| Auth | Google login handoff, protected routes, logout | Partial |
-| Onboarding | Resume, validation, completion flow | Planned |
-| Dashboard | Overview, health, finance, reminders, goals, activity rendering | Planned |
-| Dashboard Agent | Open, send, response, confirmation flow, close | Planned |
-| Forms | Meal, expense, reminder, settings, and goal validation | Planned |
-| Date Filters | Today, last 7 days, this month, custom ranges | Planned |
-| Daily Details | Health and finance row drilldowns | Planned |
-| UI States | Loading, empty, error, skeleton states | Planned |
-| Responsive Layout | Core dashboard views across mobile and desktop | Planned |
+```bash
+python -m pytest backend/tests
+```
 
 ---
 
@@ -59,15 +42,45 @@
 
 | Test File | What It Tests | Status |
 | --- | --- | --- |
-| `frontend/tests/dummy-data.test.ts` | Navigation, complete MVP/prototype dummy data coverage, meal and expense entry specs | Passing |
-| `frontend/tests/agent.test.ts` | Agent intent classification, confirmation drafts, dummy replies | Passing |
-| `frontend/tests/next-contract.test.ts` | Route groups, protected-flow shape, middleware guards, prototype section coverage, no API integration | Passing |
+| `frontend/tests/dummy-data.test.ts` | Navigation, dummy domain coverage, manual entry specs, Zod validation | Passing |
+| `frontend/tests/agent.test.ts` | Intent classification, confirmation drafts, dummy replies | Passing |
+| `frontend/tests/next-contract.test.ts` | Route groups, middleware guards, required screen sections, and no API integration | Passing |
 
 Run:
 
 ```bash
 npm.cmd test --prefix frontend
 ```
+
+---
+
+## Planned Backend Expansion Tests
+
+| Area | Coverage Intent | Status |
+| --- | --- | --- |
+| Auth | Real Firebase Admin verification and persistence-backed sessions | Planned |
+| Onboarding | Step persistence, completion, and default state initialization | Planned |
+| Telegram Linking | Token creation, expiry, duplicate protection, unlink, reconnect | Planned |
+| Telegram Webhook | Linked-user resolution and message handling | Planned |
+| Health | Meal parsing, nutrition calculation, log persistence, daily state updates | Planned |
+| Finance | Expense parsing, categorization, log persistence, summaries | Planned |
+| Goals and Reminders | Validation, create or update flows, completion and snooze behavior | Planned |
+| Memory | Save, retrieve, summarize, user isolation, vector lookup interfaces | Planned |
+| Events and Workers | Expected event emission, retries, and idempotency later | Planned |
+
+---
+
+## Planned Frontend Expansion Tests
+
+| Area | Coverage Intent | Status |
+| --- | --- | --- |
+| Auth | Firebase handoff and real logout behavior | Planned |
+| Onboarding | Resume, validation, and completion flow | Planned |
+| Dashboard | Server-backed overview, health, finance, reminders, and settings rendering | Planned |
+| Forms | Meal, expense, reminder, settings, and goal submission behavior | Planned |
+| UI States | Loading, empty, error, and skeleton states | Planned |
+| Responsive Layout | Core dashboard views across mobile and desktop | Planned |
+| Accessibility | Keyboard flow and key semantic checks | Planned |
 
 ---
 
@@ -78,24 +91,18 @@ npm.cmd test --prefix frontend
 | Google Auth | Firebase token to FastAPI session creation | Planned |
 | Onboarding | Completion to initialized profile, goals, reminders, memory, dashboard state | Planned |
 | Telegram Linking | Dashboard token to Telegram `/start <token>` to linked account | Planned |
-| Meal Logging | Telegram message to confirmed health log and dashboard visibility | Planned |
-| Voice Note | Telegram voice note to transcription to agent response | Planned |
-| Expense Logging | Conversation to categorized finance log | Planned |
+| Meal Logging | Conversation to confirmed health log and dashboard visibility | Planned |
+| Expense Logging | Conversation to categorized finance log and dashboard visibility | Planned |
 | Dashboard Agent | Dashboard message to orchestrator response | Planned |
+| Reminders | n8n trigger to FastAPI to delivery flow | Planned |
 | Summaries | Health and finance range summaries and daily detail retrieval | Planned |
-| Goals | Manual and chat-created goals after confirmation | Planned |
-| Reminders | n8n trigger to FastAPI to Telegram notification | Planned |
-| Daily Summary | Generation and storage | Planned |
 
 ---
 
-## Active Test Files
+## Module Notes
 
-| Test File | Module | Status | Notes |
-| --- | --- | --- | --- |
-| `frontend/tests/dummy-data.test.ts` | Frontend dummy data | Passing | Node built-in test runner |
-| `frontend/tests/agent.test.ts` | Frontend Agent mock | Passing | Confirms write-like intents require confirmation |
-| `frontend/tests/next-contract.test.ts` | Frontend route contract | Passing | Confirms guarded route shape and no API integration |
+- `test_index/modules/backend.md`
+- `test_index/modules/frontend.md`
 
 ---
 

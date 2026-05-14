@@ -8,5 +8,6 @@ type LoginPageProps = {
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
-  return <LoginScreen callbackUrl={params?.callbackUrl || "/dashboard"} />;
+  const callbackUrl = params?.callbackUrl?.startsWith("/") ? params.callbackUrl : "/dashboard";
+  return <LoginScreen callbackUrl={callbackUrl} />;
 }

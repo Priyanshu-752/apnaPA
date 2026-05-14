@@ -49,6 +49,6 @@ npm.cmd test --prefix frontend
 
 ## Integration Boundary
 
-The mock intentionally does not use `fetch` or `/api` routes. FastAPI integration should begin only after backend and agent dummy tests are stable.
+The mock intentionally does not use `fetch` or `/api` routes. A backend scaffold now exists, but frontend integration should still begin only after backend persistence, real auth verification, and route contracts are stable enough to avoid churn.
 
 The current App Router scaffold should preserve the Dashboard, Health, Finance, and Reminders content from `dashboard.html` while backend integration is added.

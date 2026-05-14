@@ -4,24 +4,36 @@ import { Menu, MessageCircle, LogOut, Bot, Plus } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { pageTitles, type DashboardPath } from "@/components/dashboard/navigation";
-import { appState } from "@/lib/dummy-data";
-import { clearDemoSession } from "@/lib/session";
+import { logout } from "@/lib/api";
 import { useAppStore } from "@/stores/app-store";
 
 export function Topbar({ onOpenSidebar }: { onOpenSidebar: () => void }) {
   const pathname = usePathname() as DashboardPath;
   const router = useRouter();
   const profile = useAppStore((state) => state.profile);
+  const todayLabel = useAppStore((state) => state.todayLabel);
   const openAgent = useAppStore((state) => state.openAgent);
   const openEntry = useAppStore((state) => state.openEntry);
   const openDialog = useAppStore((state) => state.openDialog);
   const telegramLinked = useAppStore((state) => state.telegramLinked);
   const resetLocalState = useAppStore((state) => state.resetLocalState);
+  const showToast = useAppStore((state) => state.showToast);
 
-  function handleLogout() {
-    clearDemoSession();
-    resetLocalState();
-    router.replace("/login");
+  async function handleLogout() {
+    try {
+      const payload = await logout();
+      resetLocalState();
+      showToast({ tone: "success", title: "Signed out", message: payload.message });
+      router.replace("/login");
+    } catch (error) {
+      resetLocalState();
+      showToast({
+        tone: "error",
+        title: "Sign-out issue",
+        message: error instanceof Error ? error.message : "You were signed out locally.",
+      });
+      router.replace("/login");
+    }
   }
 
   return (
@@ -31,7 +43,7 @@ export function Topbar({ onOpenSidebar }: { onOpenSidebar: () => void }) {
           <Menu className="h-4 w-4" />
         </Button>
         <div>
-          <span className="small-label">{appState.todayLabel}</span>
+          <span className="small-label">{todayLabel}</span>
           <h1 className="text-3xl font-black leading-tight">{pageTitles[pathname] ?? "Dashboard"}</h1>
         </div>
       </div>

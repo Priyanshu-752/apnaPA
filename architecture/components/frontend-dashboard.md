@@ -57,14 +57,12 @@ frontend/
 
 ## State Ownership
 
-| State | Owner |
-| --- | --- |
-| Server data | TanStack Query |
-| Access token and user shell | `auth-store` |
-| Open Agent dialog and draft messages | `conversation-store` |
-| Notification panel state and local unread hints | `notification-store` |
-| Dashboard filters, ranges, sidebar, and UI preferences | `dashboard-store` |
-| Business rules and persisted writes | FastAPI |
+| State | Current Owner | Planned Owner |
+| --- | --- | --- |
+| Server data | Local dummy data and screen props | TanStack Query |
+| Session gate | Demo cookie middleware | FastAPI-backed auth state |
+| Dialogs, draft messages, ranges, onboarding, Telegram state, profile | `app-store.ts` | Split client stores if needed later |
+| Business rules and persisted writes | Placeholder local behavior | FastAPI |
 
 ---
 
@@ -119,6 +117,7 @@ Implemented in `../../frontend/`:
 - Shared dashboard shell with responsive sidebar, topbar, dialogs, and route-based screen components.
 - Local dummy state for onboarding, Telegram linking, profile editing, dashboard modules, manual entry, and Dashboard Agent.
 - Dashboard, Health, Finance, Reminders, Memory, and Settings are now separate screens and URLs.
+- State is currently centralized in `src/stores/app-store.ts` rather than split across multiple stores.
 - No API integration yet.
 - Node built-in tests for dummy data, Agent behavior, route contracts, and middleware presence.
 

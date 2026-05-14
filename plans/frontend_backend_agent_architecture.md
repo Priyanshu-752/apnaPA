@@ -1,6 +1,6 @@
 # Frontend, Backend, and Agent Architecture Plan
 
-**Status**: Ready  
+**Status**: In Progress  
 **Priority**: High  
 **Source**: `../plan.md`
 
@@ -8,14 +8,15 @@
 
 ## Summary
 
-Implement apnaPA as a FastAPI-owned AI backend with a dashboard and a shared agent runtime used by both Telegram and Dashboard Agent. The current phase is still dummy-first, but the frontend is now a route-based Next.js scaffold with protected routes and separate screen pages. The next major phase is backend and agent contract implementation before real integration.
+Implement apnaPA as a FastAPI-owned AI backend with a dashboard and a shared agent runtime used by both Telegram and Dashboard Agent. The frontend route scaffold is already in place, and the backend scaffold now covers app boot, auth/session helpers, route registration, agent routing stubs, and workflow secret contracts. The next major phase is persistence and real integration behind those contracts.
 
 ---
 
 ## Backend Plan
 
-- Scaffold `backend/` with FastAPI, settings, route registration, health check, database session, schemas, and test setup.
-- Add auth foundation: Firebase verification adapter, FastAPI users, auth providers, sessions, access tokens, refresh tokens, and auth dependencies.
+- Keep the current `backend/` scaffold stable while adding persistence behind it.
+- Replace the dummy Firebase verification adapter with real Firebase Admin verification.
+- Persist FastAPI users, auth providers, sessions, access tokens, refresh tokens, and auth dependencies behind the current route surface.
 - Add onboarding services and persistence before Telegram access.
 - Add PostgreSQL models and migrations for users, auth, onboarding, Telegram linking, health, finance, goals, reminders, daily states, memories, events, summaries, conversations, notifications, AI usage, and AI actions.
 - Add Telegram linking and webhook guardrails only after canonical dashboard users exist.
@@ -26,9 +27,7 @@ Implement apnaPA as a FastAPI-owned AI backend with a dashboard and a shared age
 
 ## Agent Plan
 
-- Build the shared agent contract, registry, execution context, intent enum, and structured response schema.
-- Implement the orchestrator as the only channel-facing agent entry point.
-- Add Health and Finance agents as domain workers behind the orchestrator.
+- Keep the shared agent contract, registry, orchestrator, and initial domain-agent stubs as the stable base.
 - Add typed tools for health, finance, reminders, memory, and conversation persistence.
 - Add confirmation proposal flow for AI-generated writes.
 - Add memory retrieval through SQL filters plus Qdrant-backed semantic lookup.
@@ -41,7 +40,7 @@ Implement apnaPA as a FastAPI-owned AI backend with a dashboard and a shared age
 - The frontend now runs on Next.js, TypeScript, TailwindCSS, Shadcn-style local UI, Zustand, and Node tests.
 - Add TanStack Query when backend contracts are ready.
 - Use `dashboard.html` as the visual baseline for layout, spacing, colors, and dashboard density.
-- Keep Firebase and FastAPI API integration out until dummy UI, backend, and agent tests are stable.
+- Keep Firebase and FastAPI API integration out until backend persistence and auth contracts are stable.
 - Add Firebase Google login UI and FastAPI auth exchange in the integration phase.
 - Add protected app shell with sidebar, topbar, notifications, Telegram link status, and settings entry.
 - Add onboarding flow with resumable steps backed by FastAPI.
@@ -53,21 +52,26 @@ Implement apnaPA as a FastAPI-owned AI backend with a dashboard and a shared age
 
 ## Build Order
 
+### Completed Foundation
+
 1. Frontend dummy mock with dashboard, modules, local Agent behavior, and tests.
 2. Learning docs for backend, FastAPI, agents, RAG, n8n, and testing.
-3. Backend scaffold and health route with dummy tests.
+3. Backend scaffold and health route with tests.
 4. Backend auth foundation and test harness.
-5. Agent base contract, registry, orchestrator shell, stubs, and dummy tests.
-6. Database models and migrations.
-7. Onboarding persistence and initial state setup.
-8. Telegram linking and webhook guardrails.
-9. Health and finance services, tools, logs, and summaries.
-10. Daily state, goals, reminders, notifications, and events.
-11. Qdrant memory interfaces and retrieval.
-12. n8n workflow contracts.
-13. Add backend scaffold and auth/session contracts that match the current frontend route structure.
-14. Connect frontend modules to FastAPI after dummy backend and agent tests pass.
-15. Full integration tests across auth, onboarding, Telegram, agent, and dashboard flows.
+5. Agent base contract, registry, orchestrator shell, stubs, and agent tests.
+6. n8n workflow contract surface and shared-secret validation.
+
+### Next Build Order
+
+1. Database models, migrations, and async session management.
+2. Real Firebase verification and persistence-backed auth state.
+3. Onboarding persistence and initial state setup.
+4. Telegram linking and webhook guardrails with stored link records.
+5. Health and finance services, tools, logs, and summaries.
+6. Daily state, goals, reminders, notifications, and events.
+7. Qdrant memory interfaces and retrieval.
+8. Connect frontend modules to FastAPI after backend contracts stabilize.
+9. Full integration tests across auth, onboarding, Telegram, agent, and dashboard flows.
 
 ---
 

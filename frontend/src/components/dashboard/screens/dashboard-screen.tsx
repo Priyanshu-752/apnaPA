@@ -11,12 +11,17 @@ import { ListItem, MetricCard, SetupRow, ViewFrame, WeeklyTrend } from "@/compon
 export function DashboardScreen() {
   const onboardingDone = useAppStore((state) => state.onboardingDone);
   const telegramLinked = useAppStore((state) => state.telegramLinked);
+  const overview = useAppStore((state) => state.overview);
+  const activityFeed = useAppStore((state) => state.activityFeed);
+  const insights = useAppStore((state) => state.insights);
   const openDialog = useAppStore((state) => state.openDialog);
   const openEntry = useAppStore((state) => state.openEntry);
   const openAgent = useAppStore((state) => state.openAgent);
   const completeReminder = useAppStore((state) => state.completeReminder);
   const completedReminders = useAppStore((state) => state.completedReminders);
   const remaining = Number(!onboardingDone) + Number(!telegramLinked);
+  const recentActivity = activityFeed.length ? activityFeed : activity;
+  const nextInsights = insights.length ? insights : ["The backend will surface actionable insights here as more domain services come online."];
 
   return (
     <ViewFrame>
@@ -26,7 +31,7 @@ export function DashboardScreen() {
             <div>
               <span className="small-label">Setup</span>
               <CardTitle>Account foundation</CardTitle>
-              <CardDescription>Dummy state mirrors the future backend-owned onboarding and Telegram linking flow.</CardDescription>
+              <CardDescription>Session-backed onboarding and Telegram states now come through the backend contract.</CardDescription>
             </div>
             <Badge tone={remaining === 0 ? "green" : "amber"}>{remaining === 0 ? "Ready" : `${remaining} step${remaining === 1 ? "" : "s"} left`}</Badge>
           </CardHeader>
@@ -39,7 +44,7 @@ export function DashboardScreen() {
         <Card className="bg-[#fffdfa]">
           <span className="small-label">Agent insight</span>
           <CardTitle className="mt-1">Dinner and finance review are the next best actions.</CardTitle>
-          <CardDescription className="mt-2">The backend later will generate this from daily state, memories, reminders, and events.</CardDescription>
+          <CardDescription className="mt-2">{overview.reminderSummary}</CardDescription>
         </Card>
       </div>
 
@@ -51,7 +56,7 @@ export function DashboardScreen() {
             <CardHeader>
               <div>
                 <CardTitle>Daily state engine</CardTitle>
-                <CardDescription>Mock backend state that will become the central intelligence layer.</CardDescription>
+                <CardDescription>{overview.healthSummary}</CardDescription>
               </div>
               <Badge tone="coral">Missing dinner log</Badge>
             </CardHeader>
@@ -68,22 +73,20 @@ export function DashboardScreen() {
               <div>
                 <span className="small-label">Activity</span>
                 <CardTitle>Recent activity</CardTitle>
-                <CardDescription>Events the backend will emit and store for analytics.</CardDescription>
+                <CardDescription>Events flowing from the current backend slice.</CardDescription>
               </div>
             </CardHeader>
-            <div className="grid gap-3">{activity.map((item) => <ListItem key={item.title} {...item} />)}</div>
+            <div className="grid gap-3">{recentActivity.map((item) => <ListItem key={`${item.title}-${item.meta}`} {...item} />)}</div>
           </Card>
         </div>
         <div className="grid content-start gap-4">
           <Card className="bg-[#fffdfa]">
             <span className="small-label">AI insight</span>
             <CardTitle className="mt-1">Today's next best action</CardTitle>
-            <CardDescription className="mt-2">
-              Ask for a dinner log around 8:30 PM and suggest a high-protein option because protein is close to target but calories remain available.
-            </CardDescription>
+            <CardDescription className="mt-2">{nextInsights[0]}</CardDescription>
             <div className="mt-3 grid gap-3">
-              <ListItem title="Memory confidence" meta="8 relevant memories retrieved" action={<strong>High</strong>} />
-              <ListItem title="Automation" meta="n8n reminder workflow ready" action={<strong>21:00</strong>} />
+              <ListItem title="Finance summary" meta={overview.financeSummary} action={<strong>Live</strong>} />
+              <ListItem title="Reminder summary" meta={overview.reminderSummary} action={<strong>Live</strong>} />
             </div>
           </Card>
           <Card>

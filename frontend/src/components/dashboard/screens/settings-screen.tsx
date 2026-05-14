@@ -42,9 +42,9 @@ export function SettingsScreen() {
             <div>
               <span className="small-label">Settings</span>
               <CardTitle>System settings</CardTitle>
-              <CardDescription>These remain local in the prototype until the backend owns account and token state.</CardDescription>
+              <CardDescription>Profile preferences now sync through the backend session, while the wider account settings surface is still growing.</CardDescription>
             </div>
-            <Badge tone="amber">Local only</Badge>
+            <Badge tone="teal">Session-backed</Badge>
           </CardHeader>
           <div className="grid gap-3">{systemSettings.map((item) => <ListItem key={item.title} {...item} tone="teal" />)}</div>
         </Card>

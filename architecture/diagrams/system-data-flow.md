@@ -1,6 +1,6 @@
 # System Data Flow
 
-**Status**: Planned
+**Status**: Partially implemented as scaffold contracts
 
 ---
 
@@ -18,6 +18,8 @@ User
   -> dashboard loads /api/auth/me
 ```
 
+Current implementation note: the route contract, session creation, token issuance, and `/api/auth/me` path exist. Firebase verification is still dummy and the frontend has not integrated this flow yet.
+
 ---
 
 ## Telegram Linking Flow
@@ -32,6 +34,8 @@ Dashboard user
   -> link telegram_id to canonical user
   -> emit telegram_account_linked
 ```
+
+Current implementation note: Telegram route scaffolds exist, but real token persistence, webhook processing, and event emission are still placeholder.
 
 ---
 
@@ -51,6 +55,8 @@ Telegram or Dashboard Agent
   -> response returned to channel
 ```
 
+Current implementation note: `/api/agent/chat`, orchestrator intent routing, and domain-agent stubs exist. Real tool execution, persistence, and confirmation-save flows do not yet exist.
+
 ---
 
 ## Manual Dashboard Write Flow
@@ -65,3 +71,5 @@ Dashboard form
   -> TanStack Query invalidation
   -> dashboard refresh
 ```
+
+Current implementation note: this remains a target flow. The frontend still uses local state and does not call FastAPI yet.

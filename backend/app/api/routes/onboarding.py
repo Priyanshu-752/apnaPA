@@ -2,7 +2,8 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from backend.app.api.dependencies import get_current_user
+from backend.app.api.dependencies import get_current_user, get_session_service
+from backend.app.auth.sessions import InMemorySessionService
 from backend.app.schemas.auth import UserProfile
 from backend.app.schemas.common import MessageResponse
 from backend.app.schemas.onboarding import OnboardingStatusResponse, OnboardingStepRequest
@@ -31,8 +32,10 @@ async def save_onboarding_step(
 @router.post("/complete", response_model=MessageResponse)
 async def complete_onboarding(
     current_user: Annotated[UserProfile, Depends(get_current_user)],
+    sessions: Annotated[InMemorySessionService, Depends(get_session_service)],
 ) -> MessageResponse:
-    return MessageResponse(message=f"Onboarding completion acknowledged for {current_user.user_id}.")
+    sessions.mark_onboarding_complete(current_user.user_id)
+    return MessageResponse(message="Onboarding completed successfully.")
 
 
 @router.get("/recommendations")

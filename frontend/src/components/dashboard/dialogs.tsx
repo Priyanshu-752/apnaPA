@@ -1,12 +1,20 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { AnimatePresence, motion } from "motion/react";
 import { Bot, Save, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Dialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+  completeOnboarding as completeOnboardingRequest,
+  confirmTelegramLink,
+  createFinanceLog,
+  createGoal,
+  createHealthLog,
+  fetchTelegramLinkToken,
+  saveProfile as saveProfileRequest,
+} from "@/lib/api";
 import { appState, expenses, manualEntrySpecs, meals } from "@/lib/dummy-data";
 import { chatMessageSchema, manualEntrySchema, profileSchema } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
@@ -20,7 +28,7 @@ function goalFields(domain: "health" | "finance", useSuggestion = false) {
       ["Protein target", useSuggestion ? "105g" : "100g"],
       ["Hydration target", useSuggestion ? "3.0L" : "2.8L"],
       ["Streak target", "6 days"]
-    ];
+    ] as const;
   }
 
   return [
@@ -28,7 +36,7 @@ function goalFields(domain: "health" | "finance", useSuggestion = false) {
     ["Savings target", useSuggestion ? "22,000" : "20,000"],
     ["Food cap", "8,000"],
     ["Alert threshold", "80%"]
-  ];
+  ] as const;
 }
 
 export function DashboardDialogs() {
@@ -44,7 +52,6 @@ export function DashboardDialogs() {
       <OnboardingDialog open={dialog === "onboarding"} onClose={closeDialog} />
       <EntryDialog open={dialog === "entry"} onClose={closeDialog} />
       <ProfileDialog open={dialog === "profile"} onClose={closeDialog} />
-      <Toast />
     </>
   );
 }
@@ -54,17 +61,24 @@ function AgentDialog({ open, onClose }: { open: boolean; onClose: () => void }) 
   const sendAgentMessage = useAppStore((state) => state.sendAgentMessage);
   const [value, setValue] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isSending, setIsSending] = useState(false);
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const parsed = chatMessageSchema.safeParse(value);
     if (!parsed.success) {
       setError(parsed.error.issues[0]?.message ?? "Invalid message");
       return;
     }
-    sendAgentMessage(parsed.data);
-    setValue("");
-    setError(null);
+
+    setIsSending(true);
+    try {
+      await sendAgentMessage(parsed.data);
+      setValue("");
+      setError(null);
+    } finally {
+      setIsSending(false);
+    }
   }
 
   return (
@@ -80,7 +94,7 @@ function AgentDialog({ open, onClose }: { open: boolean; onClose: () => void }) 
         </div>
         <form className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]" onSubmit={onSubmit}>
           <Input value={value} onChange={(event) => setValue(event.target.value)} placeholder="Ask about meals, expenses, goals, or reminders" />
-          <Button type="submit" variant="primary"><Send className="h-4 w-4" />Send</Button>
+          <Button type="submit" variant="primary" disabled={isSending}><Send className="h-4 w-4" />{isSending ? "Sending..." : "Send"}</Button>
         </form>
         {error ? <p className="text-sm font-bold text-coral">{error}</p> : null}
       </div>
@@ -127,12 +141,37 @@ function GoalDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const domain = useAppStore((state) => state.activeGoalDomain);
   const showToast = useAppStore((state) => state.showToast);
   const [useSuggestion, setUseSuggestion] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const isHealth = domain === "health";
   const fields = goalFields(domain, useSuggestion);
 
   useEffect(() => {
     if (open) setUseSuggestion(false);
   }, [open, domain]);
+
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const values = Object.fromEntries(new FormData(event.currentTarget).entries());
+    const target = fields.map(([label]) => `${label}: ${String(values[label] ?? "").trim()}`).join(", ");
+
+    setIsSaving(true);
+    try {
+      const payload = await createGoal({
+        title: isHealth ? "Health goal" : "Finance goal",
+        target,
+      });
+      onClose();
+      showToast({ tone: "success", title: "Goal saved", message: payload.message });
+    } catch (error) {
+      showToast({
+        tone: "error",
+        title: "Goal error",
+        message: error instanceof Error ? error.message : "Goal could not be saved.",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  }
 
   return (
     <Dialog
@@ -143,10 +182,13 @@ function GoalDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
       description="AI suggestions are optional. The user chooses what gets saved."
       className="max-w-4xl"
     >
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <form className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]" onSubmit={onSubmit}>
         <div className="grid gap-3 sm:grid-cols-2">
           {fields.map(([label, value]) => (
-            <label className="grid gap-1 text-xs font-bold text-muted-foreground" key={label}>{label}<Input defaultValue={value} /></label>
+            <label className="grid gap-1 text-xs font-bold text-muted-foreground" key={label}>
+              {label}
+              <Input name={label} defaultValue={value} />
+            </label>
           ))}
         </div>
         <aside className="grid content-start gap-3 rounded-lg border bg-secondary p-3">
@@ -157,38 +199,126 @@ function GoalDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
               ? "Suggested: 105g protein and 3.0L hydration after five consistent days."
               : "Suggested: keep the food cap stable and raise savings only after fixed expenses are confirmed."}
           </p>
-          <Button type="button" onClick={() => { setUseSuggestion(true); showToast("Suggestion copied into the dummy goal form."); }}><Bot className="h-4 w-4" />Use suggestion</Button>
-          <Button type="button" variant="primary" onClick={() => { onClose(); showToast("Goal saved in dummy UI only."); }}><Save className="h-4 w-4" />Save user goal</Button>
+          <Button
+            type="button"
+            onClick={() => {
+              setUseSuggestion(true);
+              showToast({ tone: "info", title: "Suggestion applied", message: "The suggested values were copied into the goal form." });
+            }}
+          >
+            <Bot className="h-4 w-4" />
+            Use suggestion
+          </Button>
+          <Button type="submit" variant="primary" disabled={isSaving}><Save className="h-4 w-4" />{isSaving ? "Saving..." : "Save user goal"}</Button>
         </aside>
-      </div>
+      </form>
     </Dialog>
   );
 }
 
 function TelegramDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const linkTelegram = useAppStore((state) => state.linkTelegram);
+  const setTelegramLinked = useAppStore((state) => state.setTelegramLinked);
+  const showToast = useAppStore((state) => state.showToast);
+  const [linkToken, setLinkToken] = useState<string | null>(null);
+  const [expiresInMinutes, setExpiresInMinutes] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLinking, setIsLinking] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+
+    async function loadToken() {
+      setIsLoading(true);
+      try {
+        const payload = await fetchTelegramLinkToken();
+        if (cancelled) return;
+        setLinkToken(payload.linkToken ?? null);
+        setExpiresInMinutes(payload.expiresInMinutes ?? null);
+      } catch (error) {
+        if (cancelled) return;
+        showToast({
+          tone: "error",
+          title: "Telegram error",
+          message: error instanceof Error ? error.message : "Telegram link token could not be generated.",
+        });
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    }
+
+    void loadToken();
+    return () => {
+      cancelled = true;
+    };
+  }, [open, showToast]);
+
+  async function handleConfirm() {
+    setIsLinking(true);
+    try {
+      const payload = await confirmTelegramLink();
+      setTelegramLinked(true);
+      showToast({ tone: "success", title: "Telegram connected", message: payload.message });
+    } catch (error) {
+      showToast({
+        tone: "error",
+        title: "Telegram error",
+        message: error instanceof Error ? error.message : "Telegram could not be connected.",
+      });
+    } finally {
+      setIsLinking(false);
+    }
+  }
 
   return (
-    <Dialog open={open} onClose={onClose} title="Connect Telegram mock" kicker="Telegram">
+    <Dialog open={open} onClose={onClose} title="Connect Telegram" kicker="Telegram">
       <div className="grid gap-4">
-        <p className="text-sm leading-6 text-muted-foreground">The backend later creates a hashed expiring token and confirms the Telegram `/start` payload. This mock only flips local UI state.</p>
+        <p className="text-sm leading-6 text-muted-foreground">
+          The backend now generates the session-scoped link token for this flow. Telegram confirmation is still a placeholder, but the success and error states are coming from the API.
+        </p>
         <div className="grid gap-3">
-          <SetupRow label="Dashboard generates token" tone="green" value="Done" />
-          <SetupRow label="User opens Telegram bot" tone="amber" value="Next" />
-          <SetupRow label="Backend validates telegram_id" tone="teal" value="Mock" />
+          <SetupRow label="Dashboard generates token" tone="green" value={isLoading ? "Loading" : "Ready"} />
+          <SetupRow label="User opens Telegram bot" tone="amber" value={linkToken ? "Next" : "Pending"} />
+          <SetupRow label="Backend validates telegram_id" tone="teal" value="Placeholder" />
         </div>
-        <Button type="button" variant="primary" onClick={linkTelegram}>Mark Telegram connected</Button>
+        <div className="rounded-lg border bg-secondary p-3 text-sm">
+          <p className="font-extrabold">Link token</p>
+          <p className="mt-2 break-all text-muted-foreground">{linkToken ?? "Generating..."}</p>
+          {expiresInMinutes ? <p className="mt-2 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">Expires in {expiresInMinutes} minutes</p> : null}
+        </div>
+        <Button type="button" variant="primary" disabled={isLoading || isLinking || !linkToken} onClick={handleConfirm}>
+          {isLinking ? "Connecting..." : "Confirm Telegram connection"}
+        </Button>
       </div>
     </Dialog>
   );
 }
 
 function OnboardingDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const completeOnboarding = useAppStore((state) => state.completeOnboarding);
+  const setOnboardingDone = useAppStore((state) => state.setOnboardingDone);
   const profile = useAppStore((state) => state.profile);
+  const showToast = useAppStore((state) => state.showToast);
+  const [isSaving, setIsSaving] = useState(false);
+
+  async function handleComplete() {
+    setIsSaving(true);
+    try {
+      const payload = await completeOnboardingRequest();
+      setOnboardingDone(true);
+      showToast({ tone: "success", title: "Onboarding complete", message: payload.message });
+    } catch (error) {
+      showToast({
+        tone: "error",
+        title: "Onboarding error",
+        message: error instanceof Error ? error.message : "Onboarding could not be completed.",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  }
 
   return (
-    <Dialog open={open} onClose={onClose} title="Complete profile mock" kicker="Onboarding">
+    <Dialog open={open} onClose={onClose} title="Complete profile setup" kicker="Onboarding">
       <div className="grid gap-4">
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="grid gap-1 text-xs font-bold text-muted-foreground">Timezone<Input defaultValue={profile.timezone} /></label>
@@ -196,7 +326,7 @@ function OnboardingDialog({ open, onClose }: { open: boolean; onClose: () => voi
           <label className="grid gap-1 text-xs font-bold text-muted-foreground">Protein goal<Input defaultValue="100g" /></label>
           <label className="grid gap-1 text-xs font-bold text-muted-foreground">Monthly savings<Input defaultValue="15000" /></label>
         </div>
-        <Button type="button" variant="primary" onClick={completeOnboarding}>Mark onboarding complete</Button>
+        <Button type="button" variant="primary" disabled={isSaving} onClick={handleComplete}>{isSaving ? "Saving..." : "Mark onboarding complete"}</Button>
       </div>
     </Dialog>
   );
@@ -208,12 +338,13 @@ function EntryDialog({ open, onClose }: { open: boolean; onClose: () => void }) 
   const openAgent = useAppStore((state) => state.openAgent);
   const spec = manualEntrySpecs[type];
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (open) setErrors({});
   }, [open, type]);
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const values = Object.fromEntries(new FormData(event.currentTarget).entries());
     const parsed = manualEntrySchema(spec.fields).safeParse(values);
@@ -221,8 +352,52 @@ function EntryDialog({ open, onClose }: { open: boolean; onClose: () => void }) 
       setErrors(Object.fromEntries(parsed.error.issues.map((issue) => [String(issue.path[0]), issue.message])));
       return;
     }
-    onClose();
-    showToast(`${spec.title} saved in dummy UI only.`);
+
+    setErrors({});
+    setIsSaving(true);
+
+    try {
+      if (type === "meal") {
+        const calories = Number(values["Calories"]);
+        const protein = Number(values["Protein"]);
+        if (Number.isNaN(calories) || Number.isNaN(protein)) {
+          setErrors({
+            Calories: "Calories must be a number",
+            Protein: "Protein must be a number",
+          });
+          return;
+        }
+        const payload = await createHealthLog({
+          meal: `${values["Meal type"]}: ${values["Food items"]}`,
+          calories,
+          proteinGrams: protein,
+        });
+        onClose();
+        showToast({ tone: "success", title: "Meal logged", message: payload.message });
+        return;
+      }
+
+      const amount = Number(values["Amount"]);
+      if (Number.isNaN(amount)) {
+        setErrors({ Amount: "Amount must be a number" });
+        return;
+      }
+      const payload = await createFinanceLog({
+        category: String(values["Category"]),
+        amount,
+        note: String(values["Note"]),
+      });
+      onClose();
+      showToast({ tone: "success", title: "Expense saved", message: payload.message });
+    } catch (error) {
+      showToast({
+        tone: "error",
+        title: type === "meal" ? "Meal error" : "Expense error",
+        message: error instanceof Error ? error.message : "The entry could not be saved.",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   function askAgent() {
@@ -231,7 +406,7 @@ function EntryDialog({ open, onClose }: { open: boolean; onClose: () => void }) 
   }
 
   return (
-    <Dialog open={open} onClose={onClose} title={spec.title} kicker={type === "meal" ? "Health manual entry" : "Finance manual entry"} description="Manual dashboard entries will later call FastAPI. This mock validates the UI flow only.">
+    <Dialog open={open} onClose={onClose} title={spec.title} kicker={type === "meal" ? "Health manual entry" : "Finance manual entry"} description="Manual entries now validate in the UI and then submit to the FastAPI backend.">
       <form className="grid gap-4" onSubmit={onSubmit}>
         <div className="grid gap-3 sm:grid-cols-2">
           {spec.fields.map((field) => (
@@ -244,7 +419,7 @@ function EntryDialog({ open, onClose }: { open: boolean; onClose: () => void }) 
         </div>
         <div className="flex flex-wrap justify-end gap-2">
           <Button type="button" onClick={askAgent}>Use Agent instead</Button>
-          <Button type="submit" variant="primary">Save dummy entry</Button>
+          <Button type="submit" variant="primary" disabled={isSaving}>{isSaving ? "Saving..." : "Save entry"}</Button>
         </div>
       </form>
     </Dialog>
@@ -254,13 +429,15 @@ function EntryDialog({ open, onClose }: { open: boolean; onClose: () => void }) 
 function ProfileDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const profile = useAppStore((state) => state.profile);
   const saveProfile = useAppStore((state) => state.saveProfile);
+  const showToast = useAppStore((state) => state.showToast);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (open) setErrors({});
   }, [open]);
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = Object.fromEntries(new FormData(event.currentTarget).entries());
     const parsed = profileSchema.safeParse(formData);
@@ -268,7 +445,24 @@ function ProfileDialog({ open, onClose }: { open: boolean; onClose: () => void }
       setErrors(Object.fromEntries(parsed.error.issues.map((issue) => [String(issue.path[0]), issue.message])));
       return;
     }
-    saveProfile(parsed.data);
+
+    setIsSaving(true);
+    try {
+      const payload = await saveProfileRequest({
+        timezone: parsed.data.timezone,
+        aiStyle: parsed.data.aiStyle,
+      });
+      saveProfile(payload.user);
+      showToast({ tone: "success", title: "Profile updated", message: payload.message });
+    } catch (error) {
+      showToast({
+        tone: "error",
+        title: "Profile error",
+        message: error instanceof Error ? error.message : "Profile update failed.",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
@@ -283,13 +477,13 @@ function ProfileDialog({ open, onClose }: { open: boolean; onClose: () => void }
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="grid gap-1 text-xs font-bold text-muted-foreground">
             Name
-            <Input name="name" defaultValue={profile.name} placeholder="Your name" />
-            {errors.name ? <span className="text-coral">{errors.name}</span> : null}
+            <Input name="name" defaultValue={profile.name} placeholder="Your name" readOnly />
+            <span className="text-xs font-medium text-muted-foreground">Managed by your Google account for now.</span>
           </label>
           <label className="grid gap-1 text-xs font-bold text-muted-foreground">
             Provider
-            <Input name="authProvider" defaultValue={profile.authProvider} placeholder="Google" />
-            {errors.authProvider ? <span className="text-coral">{errors.authProvider}</span> : null}
+            <Input name="authProvider" defaultValue={profile.authProvider} placeholder="Google" readOnly />
+            <span className="text-xs font-medium text-muted-foreground">Managed by the authenticated provider.</span>
           </label>
           <label className="grid gap-1 text-xs font-bold text-muted-foreground">
             Timezone
@@ -304,38 +498,12 @@ function ProfileDialog({ open, onClose }: { open: boolean; onClose: () => void }
         </div>
         <div className="flex flex-wrap justify-end gap-2">
           <Button type="button" onClick={onClose}>Cancel</Button>
-          <Button type="submit" variant="primary">
+          <Button type="submit" variant="primary" disabled={isSaving}>
             <Save className="h-4 w-4" />
-            Save profile
+            {isSaving ? "Saving..." : "Save profile"}
           </Button>
         </div>
       </form>
     </Dialog>
-  );
-}
-
-function Toast() {
-  const toast = useAppStore((state) => state.toast);
-  const clearToast = useAppStore((state) => state.clearToast);
-
-  useEffect(() => {
-    if (!toast) return;
-    const timeout = window.setTimeout(clearToast, 2600);
-    return () => window.clearTimeout(timeout);
-  }, [toast, clearToast]);
-
-  return (
-    <AnimatePresence>
-      {toast ? (
-        <motion.div
-          className="fixed bottom-5 right-5 z-[60] w-[min(360px,calc(100vw-40px))] rounded-lg bg-[#242927] px-4 py-3 text-sm font-bold text-white shadow-soft"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-        >
-          {toast}
-        </motion.div>
-      ) : null}
-    </AnimatePresence>
   );
 }

@@ -2,9 +2,13 @@
 
 Per-module test notes live here once implementation begins.
 
-Planned module docs:
+Active module docs:
 
+- `backend.md`
 - `frontend.md`
+
+Planned future module docs:
+
 - `auth.md`
 - `onboarding.md`
 - `telegram.md`
