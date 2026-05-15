@@ -1,6 +1,6 @@
 # Backend Core Architecture
 
-**Status**: FastAPI scaffold, auth foundation, and agent routing stubs implemented  
+**Status**: FastAPI scaffold, auth foundation, and first session-mutation slice implemented  
 **Source**: `../../plan.md`
 
 ---
@@ -9,7 +9,7 @@
 
 The backend is the source of truth for apnaPA. It owns users, sessions, onboarding, Telegram linking, domain data, AI orchestration, memory, events, reminders, analytics, and integrations.
 
-Firebase validates Google identity only. Telegram and the dashboard are channels into the same backend.
+The current frontend now reaches these contracts through Next.js route handlers, but FastAPI still owns the core product boundary.
 
 ---
 
@@ -119,25 +119,25 @@ backend/
 | Telegram | `/api/telegram/link-token`, `/api/telegram/link/confirm`, `/api/telegram/unlink`, `/api/telegram/link/status`, `/api/telegram/webhook` |
 | Conversation | `/api/agent/chat`, `/api/conversation/message`, `/api/conversation/voice`, `/api/conversation/history` |
 | Dashboard | `/api/dashboard/overview`, `/api/dashboard/activity`, `/api/dashboard/insights` |
-| Health | Daily state, summaries, daily details, logs, goals |
-| Finance | Summaries, daily details, logs, budgets, goals |
-| Goals | List, create, update, suggestions |
-| Reminders | List, create, update, complete, snooze |
-| Memory | Search, recent, create, update |
-| Settings | Profile, notifications, AI preferences |
-| Notifications | List, mark read, test |
-| Admin | Health, metrics, jobs, AI usage, workflows |
+| Health | summary, logs |
+| Finance | summary, logs |
+| Goals | list, create |
+| Reminders | list, create |
+| Memory | search, recent, create, update later |
+| Settings | profile, notifications, AI preferences later |
+| Notifications | list, mark read, test later |
+| Admin | health, metrics, jobs, AI usage, workflows later |
 
 ---
 
 ## Request Flow
 
 1. API route validates request and auth context.
-2. Dependency layer loads user, permissions, request id, and trace id.
-3. Service layer performs domain work inside a transaction when needed.
-4. Domain writes emit immutable events.
-5. Agent writes are proposed first, validated, and saved only after user confirmation.
-6. Observability records route, user id, trace id, latency, AI usage, and errors.
+2. Dependency layer loads current user from the access token.
+3. Session service handles refresh token validation and current-session mutation.
+4. Placeholder routes either return contract data or acknowledgement messages.
+5. Agent writes are still proposed first, but real confirmation-save flow is not persisted yet.
+6. Workflow routes still enforce shared-secret validation.
 
 ---
 
@@ -147,6 +147,7 @@ backend/
 backend/
   app/
     api/
+      dependencies.py
       routes/
     auth/
       firebase.py
@@ -177,30 +178,31 @@ backend/
 
 Implemented today:
 
-- Settings loader with `.env` support.
-- FastAPI app factory and route registration.
-- Health check route.
-- Database session placeholder.
-- Auth schemas and request or response models.
-- Dummy Firebase verification adapter.
-- JWT helper and in-memory session service.
-- Auth routes with dependency boundaries.
-- Agent base contract, registry, orchestrator, health agent, finance agent, and memory retriever stub.
-- Workflow webhook secret validation routes.
-- Backend tests for app boot, auth flow shape, token helpers, agent routing, and workflow secret checks.
+- settings loader with `.env` support
+- FastAPI app factory and route registration
+- health check route
+- database session placeholder
+- auth schemas and request or response models
+- dummy Google verification adapter
+- JWT helper and in-memory session service
+- auth routes with dependency boundaries
+- session mutation helpers for profile, onboarding-complete, and Telegram-link flags
+- agent base contract, registry, orchestrator, health agent, finance agent, and memory retriever stub
+- workflow webhook secret validation routes
+- backend tests for app boot, auth flow shape, token helpers, agent routing, and workflow secret checks
 
 ---
 
 ## Next Implementation Slice
 
-Build persistence and integration behind the existing contract surface:
+Build persistence and real verification behind the existing contract surface:
 
-- Replace the dummy Firebase verifier with real Firebase Admin verification.
-- Add PostgreSQL models and migrations.
-- Replace the database placeholder with real async session management.
-- Persist users, providers, sessions, onboarding state, and Telegram link records.
-- Add real service-layer logic behind onboarding, dashboard, reminders, goals, and settings routes.
-- Expand tests from scaffold coverage to persistence and contract behavior.
+- replace the dummy Google verifier with real Firebase Admin verification
+- add PostgreSQL models and migrations
+- replace the database placeholder with real async session management
+- persist users, providers, sessions, onboarding state, and Telegram link records
+- add real service-layer logic behind dashboard, reminders, goals, settings, onboarding, and domain routes
+- expand tests from scaffold coverage to persistence and contract behavior
 
 Current scaffold exists in:
 

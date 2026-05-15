@@ -16,9 +16,9 @@ User-facing and operator-facing documentation for completed features lives here.
 
 | Doc | Purpose | Status |
 | --- | --- | --- |
-| `frontend_mock.md` | How to run and test the current dummy frontend | Active |
+| `frontend_mock.md` | How to run and test the current frontend prototype and partial integration slice | Active |
 | `local_setup.md` | How to run backend, frontend, services, and tests locally | Planned |
-| `google_auth.md` | Google login and FastAPI session behavior | Planned |
+| `google_auth.md` | Google login and FastAPI session behavior | Active |
 | `telegram_linking.md` | How users connect Telegram to dashboard accounts | Planned |
 | `dashboard_agent.md` | How the in-app Agent works | Planned |
 | `health_logging.md` | Meal logging and health summaries | Planned |

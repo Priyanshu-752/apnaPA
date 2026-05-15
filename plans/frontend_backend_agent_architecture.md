@@ -8,14 +8,18 @@
 
 ## Summary
 
-Implement apnaPA as a FastAPI-owned AI backend with a dashboard and a shared agent runtime used by both Telegram and Dashboard Agent. The frontend route scaffold is already in place, and the backend scaffold now covers app boot, auth/session helpers, route registration, agent routing stubs, and workflow secret contracts. The next major phase is persistence and real integration behind those contracts.
+Implement apnaPA as a FastAPI-owned AI backend with a dashboard and a shared agent runtime used by both Telegram and Dashboard Agent.
+
+The frontend route scaffold is already in place. The backend scaffold already covers app boot, auth/session helpers, route registration, agent routing stubs, and workflow secret contracts. The frontend has now crossed into a first real integration slice through Google Identity Services, Next.js route handlers, cookie-backed session management, backend bootstrap loading, backend agent chat, and a first set of backend-backed writes.
+
+The next major phase is replacing placeholder verification and in-memory mutation with real persistence and broader server-backed reads.
 
 ---
 
 ## Backend Plan
 
 - Keep the current `backend/` scaffold stable while adding persistence behind it.
-- Replace the dummy Firebase verification adapter with real Firebase Admin verification.
+- Replace the dummy Google verification adapter with real Firebase Admin verification.
 - Persist FastAPI users, auth providers, sessions, access tokens, refresh tokens, and auth dependencies behind the current route surface.
 - Add onboarding services and persistence before Telegram access.
 - Add PostgreSQL models and migrations for users, auth, onboarding, Telegram linking, health, finance, goals, reminders, daily states, memories, events, summaries, conversations, notifications, AI usage, and AI actions.
@@ -37,16 +41,14 @@ Implement apnaPA as a FastAPI-owned AI backend with a dashboard and a shared age
 
 ## Frontend Plan
 
-- The frontend now runs on Next.js, TypeScript, TailwindCSS, Shadcn-style local UI, Zustand, and Node tests.
-- Add TanStack Query when backend contracts are ready.
-- Use `dashboard.html` as the visual baseline for layout, spacing, colors, and dashboard density.
-- Keep Firebase and FastAPI API integration out until backend persistence and auth contracts are stable.
-- Add Firebase Google login UI and FastAPI auth exchange in the integration phase.
-- Add protected app shell with sidebar, topbar, notifications, Telegram link status, and settings entry.
+- Keep the existing route groups, screen boundaries, and visual baseline from `dashboard.html`.
+- Keep the Next.js route-handler auth and cookie boundary unless there is a strong reason to move sensitive session logic into direct browser-to-backend calls.
+- Add TanStack Query when enough backend read contracts are stable to justify shared caching and invalidation.
+- Expand the current server-backed slice from auth, bootstrap, and selected writes into health, finance, reminders, memory, and settings reads.
+- Preserve backend success and validation wording in the UI wherever it helps users understand failures.
 - Add onboarding flow with resumable steps backed by FastAPI.
-- Add dashboard overview, health, finance, reminders, goals, memory, settings, and activity modules.
-- Add Dashboard Agent dialog connected to `/api/agent/chat`.
-- Add manual entry dialogs for meals, expenses, reminders, and goals.
+- Keep Dashboard Agent connected to `/api/agent/chat`.
+- Replace remaining dummy reminder and detail flows only after their backend contract is shaped.
 
 ---
 
@@ -60,17 +62,19 @@ Implement apnaPA as a FastAPI-owned AI backend with a dashboard and a shared age
 4. Backend auth foundation and test harness.
 5. Agent base contract, registry, orchestrator shell, stubs, and agent tests.
 6. n8n workflow contract surface and shared-secret validation.
+7. Frontend Google login UI, Next.js route handlers, session-cookie bridge, backend bootstrap, and first backend-backed dashboard actions.
+8. Backend current-session mutation for profile, onboarding, and Telegram placeholder state.
 
 ### Next Build Order
 
-1. Database models, migrations, and async session management.
-2. Real Firebase verification and persistence-backed auth state.
+1. Real Firebase verification and persistence-backed auth state.
+2. Database models, migrations, and async session management.
 3. Onboarding persistence and initial state setup.
 4. Telegram linking and webhook guardrails with stored link records.
 5. Health and finance services, tools, logs, and summaries.
 6. Daily state, goals, reminders, notifications, and events.
 7. Qdrant memory interfaces and retrieval.
-8. Connect frontend modules to FastAPI after backend contracts stabilize.
+8. Broader frontend server-backed reads after backend contracts stabilize.
 9. Full integration tests across auth, onboarding, Telegram, agent, and dashboard flows.
 
 ---
@@ -81,11 +85,10 @@ Implement apnaPA as a FastAPI-owned AI backend with a dashboard and a shared age
 - Dashboard users are canonical, and Telegram accounts cannot access personal data before linking.
 - Dashboard Agent and Telegram use the same orchestrator and tool flow.
 - AI-generated writes are validated and require confirmation.
-- Manual dashboard writes bypass AI but still use backend validation, events, and user isolation.
-- Domain writes update daily state or emit events needed for later aggregation.
-- Frontend modules have loading, empty, error, and success states.
-- The current frontend route scaffold can run and test locally with route guards, separate screens, and no backend dependency.
-- Tests cover auth/session helpers, onboarding, Telegram linking, agent routing, health and finance logging, daily state, summaries, and protected dashboard APIs.
+- Manual dashboard writes bypass AI but still use backend validation and user isolation.
+- Frontend modules have loading, empty, error, and success states as integration expands.
+- The current frontend route scaffold can run, test, and build locally with protected routes, separate screens, Google login UI, and the session-cookie bridge.
+- Tests cover auth/session helpers, agent routing, workflow validation, and the current frontend route-handler integration surface.
 
 ---
 

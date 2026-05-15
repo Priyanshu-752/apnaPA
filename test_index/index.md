@@ -44,12 +44,13 @@ python -m pytest backend/tests
 | --- | --- | --- |
 | `frontend/tests/dummy-data.test.ts` | Navigation, dummy domain coverage, manual entry specs, Zod validation | Passing |
 | `frontend/tests/agent.test.ts` | Intent classification, confirmation drafts, dummy replies | Passing |
-| `frontend/tests/next-contract.test.ts` | Route groups, middleware guards, required screen sections, and no API integration | Passing |
+| `frontend/tests/next-contract.test.ts` | Route groups, middleware guards, required screen sections, and session-backed auth/bootstrap route presence | Passing |
 
 Run:
 
 ```bash
 npm.cmd test --prefix frontend
+npm.cmd run build --prefix frontend
 ```
 
 ---
@@ -74,7 +75,7 @@ npm.cmd test --prefix frontend
 
 | Area | Coverage Intent | Status |
 | --- | --- | --- |
-| Auth | Firebase handoff and real logout behavior | Planned |
+| Auth | Browser Google handoff, route-handler exchange, logout, and refresh behavior | Planned |
 | Onboarding | Resume, validation, and completion flow | Planned |
 | Dashboard | Server-backed overview, health, finance, reminders, and settings rendering | Planned |
 | Forms | Meal, expense, reminder, settings, and goal submission behavior | Planned |
@@ -88,11 +89,11 @@ npm.cmd test --prefix frontend
 
 | Flow | Coverage Intent | Status |
 | --- | --- | --- |
-| Google Auth | Firebase token to FastAPI session creation | Planned |
+| Google Auth | Browser credential to Next route handler to FastAPI session creation | Planned |
 | Onboarding | Completion to initialized profile, goals, reminders, memory, dashboard state | Planned |
 | Telegram Linking | Dashboard token to Telegram `/start <token>` to linked account | Planned |
-| Meal Logging | Conversation to confirmed health log and dashboard visibility | Planned |
-| Expense Logging | Conversation to categorized finance log and dashboard visibility | Planned |
+| Meal Logging | Dashboard form or conversation to confirmed health log and dashboard visibility | Planned |
+| Expense Logging | Dashboard form or conversation to categorized finance log and dashboard visibility | Planned |
 | Dashboard Agent | Dashboard message to orchestrator response | Planned |
 | Reminders | n8n trigger to FastAPI to delivery flow | Planned |
 | Summaries | Health and finance range summaries and daily detail retrieval | Planned |

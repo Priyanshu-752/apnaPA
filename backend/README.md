@@ -4,13 +4,14 @@ This is the first real backend slice for apnaPA.
 
 It currently includes:
 
-- a FastAPI app factory and route registration.
-- auth token exchange, refresh, logout, and `/me`.
-- protected route dependencies.
-- a shared orchestrator scaffold with health and finance agent stubs.
-- placeholder dashboard, onboarding, Telegram, reminder, goal, memory, settings, notification, and workflow routes.
-- n8n-style workflow webhook contracts with shared-secret validation.
-- pytest coverage for app boot, auth flow shape, token helpers, agent routing, and workflow secret checks.
+- a FastAPI app factory and route registration
+- auth token exchange, refresh, logout, and `/me`
+- protected route dependencies
+- a shared orchestrator scaffold with health and finance agent stubs
+- placeholder dashboard, onboarding, Telegram, reminder, goal, memory, settings, notification, and workflow routes
+- in-memory session mutation for profile, onboarding-complete, and Telegram-linked state
+- n8n-style workflow webhook contracts with shared-secret validation
+- pytest coverage for app boot, auth flow shape, token helpers, agent routing, and workflow secret checks
 
 ---
 
@@ -25,7 +26,7 @@ The backend settings loader reads `backend/.env` automatically.
 
 Detailed setup guide:
 
-- `backend/SETUP.md` for where each env value comes from and the full local boot flow.
+- `backend/SETUP.md` for where each env value comes from and the full local boot flow
 
 ```bash
 python -m uvicorn backend.main:app --reload
@@ -51,7 +52,7 @@ python -m pytest backend/tests
 
 Replace placeholder values in `backend/.env` with your real keys.
 
-If you need the exact steps for Firebase, Telegram, OpenAI, Postgres, Qdrant, Redis, and n8n values, use `backend/SETUP.md`.
+If you need the exact steps for Firebase, Telegram, OpenAI, Postgres, Qdrant, Redis, n8n, and the frontend Google client id, use `backend/SETUP.md`.
 
 Most important ones:
 
@@ -76,17 +77,20 @@ This backend is intentionally scaffold-first.
 
 What is real now:
 
-- route groups and protected auth boundaries.
-- in-memory session lifecycle.
-- JWT access token creation and validation.
-- orchestrator-first agent contract.
-- n8n webhook secret pattern.
+- route groups and protected auth boundaries
+- in-memory session lifecycle
+- JWT access token creation and validation
+- refresh token rotation and logout
+- in-memory mutation of current-session profile, onboarding, and Telegram-link flags
+- orchestrator-first agent contract
+- n8n webhook secret pattern
 
 What is still placeholder:
 
-- database persistence.
-- Firebase Admin verification.
-- OpenAI model calls.
-- Telegram bot handlers.
-- Qdrant memory retrieval.
-- reminder delivery workers and analytics events.
+- database persistence
+- Firebase Admin verification
+- OpenAI model calls
+- Telegram bot handlers
+- Qdrant memory retrieval
+- reminder delivery workers and analytics events
+- most domain responses beyond contract shape and acknowledgement messages

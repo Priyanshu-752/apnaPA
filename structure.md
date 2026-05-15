@@ -51,6 +51,7 @@ PersonalAgent/
 |   |   |   |-- memory/
 |   |   |   `-- orchestrator/
 |   |   |-- api/
+|   |   |   |-- dependencies.py
 |   |   |   `-- routes/
 |   |   |-- auth/
 |   |   |-- config/
@@ -73,12 +74,14 @@ PersonalAgent/
 |
 |-- docs/
 |   |-- README.md
-|   `-- frontend_mock.md
+|   |-- frontend_mock.md
+|   `-- google_auth.md
 |
 |-- errors/
 |   `-- README.md
 |
 |-- frontend/
+|   |-- .env.example
 |   |-- README.md
 |   |-- components.json
 |   |-- global.d.ts
@@ -94,6 +97,7 @@ PersonalAgent/
 |   |   |-- app/
 |   |   |   |-- (auth)/
 |   |   |   |-- (dashboard)/
+|   |   |   |-- api/
 |   |   |   |-- globals.css
 |   |   |   |-- layout.tsx
 |   |   |   `-- page.tsx
@@ -103,6 +107,7 @@ PersonalAgent/
 |   |   |   `-- ui/
 |   |   |-- lib/
 |   |   |-- stores/
+|   |   |-- types/
 |   |   `-- middleware.ts
 |   `-- tests/
 |       |-- agent.test.ts
@@ -152,7 +157,10 @@ PersonalAgent/
 | Frontend state | `context_frontend.md` |
 | Backend app | `backend/app/` |
 | Frontend app | `frontend/src/` |
+| Frontend API bridge | `frontend/src/app/api/` |
+| Frontend session helpers | `frontend/src/lib/backend-route.ts`, `frontend/src/lib/api.ts` |
 | Backend setup guide | `backend/SETUP.md` |
+| Frontend env template | `frontend/.env.example` |
 | Documentation refresh prompt | `project_refresh_prompt.md` |
 | Learning docs | `learn/` |
 | Session workflow | `work_prompt.md` |

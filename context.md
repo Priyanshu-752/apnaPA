@@ -2,7 +2,7 @@
 
 **Last Updated**: 2026-05-14  
 **Project**: apnaPA AI Personal Manager  
-**Status**: Frontend and backend scaffolds are both implemented and tested  
+**Status**: Backend scaffold and first frontend-backend auth/session slice are implemented and verified  
 **Primary Plan**: `plan.md`
 
 ---
@@ -11,47 +11,46 @@
 
 ### In Progress
 
-- The frontend remains a route-based Next.js scaffold using local dummy data and a demo session cookie.
-- The backend now exists as a FastAPI scaffold with auth/session helpers, route registration, agent routing stubs, and workflow webhook contracts.
-- Project context is now split into `context.md`, `context_backend.md`, and `context_frontend.md` so each surface can be maintained independently.
-- Product and long-range architecture still live in `plan.md`, while implementation truth is moving into code-backed docs.
+- The frontend is no longer a pure dummy scaffold. It now has a partial integration layer: Google Identity Services login UI, cookie-backed Next.js route handlers, backend bootstrap loading, backend-backed agent chat, and backend-backed writes for profile, onboarding, Telegram connect, health logs, finance logs, and goals.
+- The backend still uses intentional placeholder internals for identity verification and persistence. Google token verification is still dummy, sessions remain in-memory, and most domain routes still return placeholder data or acknowledgement messages.
+- Project context is still split across `context.md`, `context_backend.md`, and `context_frontend.md`, and that split remains the right working model for future sessions.
 
 ### Completed
 
 - Long-form product plan created for apnaPA MVP and future phases.
-- Dashboard HTML prototype created as the current visual guide.
-- Root-level context pipeline created for resumable AI-assisted development.
-- Backend core, frontend dashboard, and agent system architecture docs created.
-- System ownership boundaries recorded in ADR-001.
+- Dashboard HTML prototype created as the visual baseline.
+- Root-level context pipeline, logs, checkpoints, and documentation workflow created.
 - Frontend converted into a Next.js App Router app under `frontend/src/`.
 - Auth and dashboard route groups added with separate pages for dashboard, health, finance, reminders, memory, and settings.
-- Middleware-based protected routes added using a local demo session cookie.
-- Shared dashboard shell added with responsive sidebar, topbar, dialogs, route-based screen components, onboarding state, Telegram link state, profile editing, and local agent chat behavior.
-- Frontend tests added and passing with Node's built-in test runner.
-- Backend FastAPI app factory and route registration added under `backend/app/`.
-- Backend auth flow added for Google token exchange, `/me`, refresh rotation, logout, and protected user dependencies.
-- In-memory session lifecycle and JWT token helpers implemented for the current scaffold.
-- Agent base contract, registry, orchestrator service, health agent, finance agent, and memory retriever stub added.
-- Backend route groups added for admin, auth, onboarding, telegram, agent, conversation, dashboard, health, finance, reminders, goals, memory, settings, notifications, and workflows.
-- n8n-style webhook secret validation added for workflow routes.
-- Backend pytest coverage added for app boot, auth flow shape, token helpers, agent routing, and workflow secret checks.
-- Backend environment/setup guide added in `backend/SETUP.md`.
+- Middleware-based protected routes added around dashboard screens.
+- Shared dashboard shell, dialogs, route-based screens, responsive sidebar, and route contract tests added.
+- FastAPI backend scaffold created with route registration, settings loading, auth/session helpers, protected dependencies, orchestrator stubs, and workflow secret validation.
+- Backend auth routes added for Google token exchange, `/me`, refresh, and logout.
+- Backend agent registry, orchestrator, health agent, finance agent, and memory retriever stub added.
+- Frontend now uses the official Google Identity Services button and exchanges the credential through `frontend/src/app/api/auth/google/route.ts`.
+- Next.js route handlers now proxy browser requests to FastAPI and manage session cookies through `frontend/src/lib/backend-route.ts`.
+- Frontend bootstrap loading now hydrates user, overview, activity, and insights through `/api/app/bootstrap`.
+- Frontend toasts now preserve backend `message` and validation `detail` text rather than generic local strings.
+- Dashboard agent chat now calls the backend orchestrator through `/api/agent/chat`.
+- Profile update, onboarding complete, Telegram connect, health log, finance log, goal save, and logout now call backend-backed routes.
+- Backend in-memory sessions now mutate profile, onboarding, and Telegram-linked state for the current user session.
+- Frontend tests, backend tests, and frontend production build are all passing for the current slice.
 
 ### Next Steps
 
-- Replace the dummy Firebase verifier with real Firebase Admin verification.
-- Add PostgreSQL models, migrations, and real async database sessions.
-- Persist onboarding, Telegram linking, goals, reminders, memory, and dashboard state.
-- Replace backend placeholders with real domain services for health, finance, reminders, and settings.
-- Add OpenAI-backed orchestration and Qdrant-backed memory retrieval.
-- Keep frontend on dummy data until backend contracts stabilize, then add API client and TanStack Query.
-- Replace the demo frontend session cookie with real Firebase-to-FastAPI auth handoff.
-- Add integration tests across auth, onboarding, Telegram linking, agent chat, and dashboard data flows.
+1. Replace the dummy Firebase verifier with real Firebase Admin verification against the browser client audience.
+2. Add PostgreSQL models, migrations, and real async session or persistence boundaries.
+3. Persist canonical users, auth providers, sessions, onboarding state, Telegram link records, profile settings, goals, reminders, and dashboard state.
+4. Replace placeholder dashboard, onboarding, Telegram, health, finance, reminder, and goal responses with real service-layer logic.
+5. Decide whether the frontend should keep expanding through Next route handlers only or introduce TanStack Query once more backend contracts stabilize.
+6. Extend frontend integration beyond the current bootstrap and action slice so health, finance, reminders, memory, and settings read from server state instead of dummy data.
+7. Add integration coverage for the browser Google handoff, cookie refresh flow, onboarding, Telegram linking, and backend-backed dashboard actions.
 
 ### Blockers
 
-- No blocking dependency is preventing the next backend phase.
-- The current limits are intentional placeholders: dummy Firebase verification, in-memory sessions, stub memory retrieval, no real database, and no live external integrations.
+- No hard blocker is preventing the next slice.
+- Current limits are intentional and still important: dummy Google verification, in-memory sessions, placeholder dashboard data, dummy memory retrieval, and no real database or external integrations.
+- Google sign-in requires a valid `Web application` OAuth client with correct local origins configured in Google Cloud before the browser flow will work.
 
 ---
 
@@ -59,27 +58,29 @@
 
 | Area | Current or Planned Technology |
 | --- | --- |
-| Frontend | Next.js, TypeScript, TailwindCSS, Zustand, Zod, motion, TanStack Query later |
+| Frontend | Next.js, TypeScript, TailwindCSS, Zustand, Zod, motion, browser `fetch`, TanStack Query later |
+| Frontend Auth UI | Google Identity Services |
+| Frontend Server Boundary | Next.js App Router route handlers and `next/headers` cookies |
 | Backend | FastAPI, Python, Pydantic Settings, PyJWT, async persistence later |
-| Auth | Firebase Authentication for Google OAuth, FastAPI-owned sessions and JWTs |
-| Database | PostgreSQL planned, placeholder session currently |
+| Auth | Google browser credential -> Next.js route handler -> FastAPI session exchange |
+| Database | PostgreSQL planned, in-memory session mutation currently |
 | Vector Memory | Qdrant planned, stub retriever currently |
 | Cache and Queues | Redis later |
 | Workers | Celery or Dramatiq later |
 | AI | OpenAI models later, orchestrator stub currently |
 | Automation | n8n webhook contracts implemented, workflow engine later |
-| External Channel | Telegram linking and webhook routes scaffolded |
+| External Channel | Telegram linking routes scaffolded, webhook still placeholder |
 
 ---
 
 ## Key Decisions
 
-1. **FastAPI owns product intelligence**: Firebase only verifies Google identity, and n8n only schedules or delivers workflows.
-2. **Dashboard users are canonical**: Telegram accounts must link to authenticated dashboard users before accessing personal data.
-3. **One orchestrator entry point**: Sub-agents do not communicate directly with users.
-4. **Confirmed AI writes**: AI-generated writes require explicit user confirmation and audit logging.
-5. **Context now has three layers**: `context.md` tracks whole-app state, while `context_backend.md` and `context_frontend.md` track implementation details for each surface.
-6. **System ownership boundaries are accepted**: FastAPI owns backend intelligence and product state; frontend owns UI; agents run through the orchestrator.
+1. **FastAPI remains the source of truth**: even with Next.js route handlers added, the frontend still proxies to FastAPI rather than owning business rules.
+2. **Next.js owns browser-safe session handling**: the browser talks to local App Router API routes, which set and refresh `httpOnly` cookies and normalize backend responses.
+3. **Dashboard users are canonical**: Telegram remains a linked channel, not an identity source.
+4. **Confirmed AI writes still matter**: the backend-backed agent chat returns confirmation-oriented responses even though actual persistence is still placeholder.
+5. **Partial integration is acceptable before persistence**: the project has moved past pure mock mode, but only the auth/session shell and a small action slice are integrated so far.
+6. **Context stays split by surface**: `context.md`, `context_backend.md`, and `context_frontend.md` remain the preferred maintenance model.
 
 See `decisions/` for future ADRs.
 
@@ -93,15 +94,14 @@ See `decisions/` for future ADRs.
 | `plan.md` | Full master plan and implementation sequence |
 | `context.md` | Whole-app current state and cross-surface next steps |
 | `context_backend.md` | Backend-specific implementation state, placeholders, and next steps |
-| `context_frontend.md` | Frontend-specific implementation state, UI coverage, and next steps |
+| `context_frontend.md` | Frontend-specific implementation state, integration boundary, and next steps |
 | `dashboard.html` | Current dashboard visual prototype |
-| `frontend/` | Current route-based Next.js frontend scaffold |
-| `backend/` | Current FastAPI backend scaffold |
+| `frontend/` | Current Next.js frontend with partial backend integration |
+| `backend/` | Current FastAPI backend scaffold and in-memory session slice |
 | `project_refresh_prompt.md` | Reusable prompt to refresh project docs and context after major work |
 | `learn/` | Learning docs for backend, agents, RAG, n8n, FastAPI, and tests |
 | `architecture/` | Living architecture docs |
 | `plans/` | Feature and implementation plans |
-| `decisions/ADR-001-system-ownership-boundaries.md` | Accepted system ownership boundary |
 | `test_index/` | Test registry and module-level coverage notes |
 | `logs/` | Development activity history |
 | `context_checkpoints/` | Resumable project snapshots |

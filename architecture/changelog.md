@@ -2,6 +2,10 @@
 
 ## 2026-05-14
 
+- Refreshed architecture docs to reflect the new Google Identity Services plus Next.js route-handler session bridge.
+- Updated frontend architecture notes from pure dummy mode to partial backend integration mode.
+- Updated backend architecture notes to capture current-session profile, onboarding, and Telegram mutation behavior.
+- Updated system data-flow notes to reflect live auth, bootstrap, agent chat, and manual-write proxy flows.
 - Refreshed architecture docs to reflect that both the frontend and backend scaffolds now exist.
 - Recorded the split-context workflow using `context.md`, `context_backend.md`, and `context_frontend.md`.
 - Updated backend architecture notes to distinguish implemented scaffold pieces from target long-term structure.

@@ -230,7 +230,21 @@ docker run --name apnapa-n8n -p 5678:5678 -d n8nio/n8n
 
 For the current scaffold, you can keep `apnapa-dashboard`.
 
-Later, when you wire a real Google sign-in flow, replace this with the frontend client audience or OAuth client identifier your auth flow expects.
+The frontend now uses a real browser Google sign-in flow. Keep this aligned with the browser OAuth client audience or identifier your FastAPI verification layer expects once the dummy verifier is replaced.
+
+For the frontend browser setup, also create `frontend/.env` from `frontend/.env.example` and set:
+
+```env
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-web-oauth-client-id.apps.googleusercontent.com
+APNAPA_BACKEND_URL=http://127.0.0.1:8000
+```
+
+The Google OAuth client must be a `Web application` client and should include local origins such as:
+
+- `http://localhost:3000`
+- `http://127.0.0.1:3000`
+- `http://localhost:3001`
+- `http://127.0.0.1:3001`
 
 ## 3. Install backend dependencies
 

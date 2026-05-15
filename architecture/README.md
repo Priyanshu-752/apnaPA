@@ -1,7 +1,7 @@
 # apnaPA Architecture
 
 **Last Updated**: 2026-05-14  
-**Status**: Target architecture defined, frontend and backend scaffolds implemented  
+**Status**: Target architecture defined, backend scaffold implemented, frontend session bridge and partial integration live  
 **Source**: `../plan.md`
 
 ---
@@ -10,11 +10,15 @@
 
 apnaPA uses FastAPI as the central AI and product backend. Telegram and the dashboard are channels into the same orchestrator, memory service, tools, and confirmation rules.
 
+The dashboard now reaches FastAPI through a two-layer boundary:
+
 ```text
-Google OAuth
-  -> Firebase Authentication
-  -> FastAPI Auth + Core Backend <-> Next.js Dashboard
-       |                         \-> Dashboard Agent
+Browser
+  -> Google Identity Services
+  -> Next.js App Router UI
+  -> Next.js route handlers and cookie/session bridge
+  -> FastAPI Auth + Core Backend
+       |-> Dashboard bootstrap routes
        |-> Orchestrator Agent
        |-> Health Agent
        |-> Finance Agent
@@ -37,8 +41,9 @@ Google OAuth
 | Component | Responsibility |
 | --- | --- |
 | FastAPI Core Backend | Auth, sessions, orchestration, business logic, memory, events, API surface |
-| Firebase Authentication | Google OAuth identity verification only |
-| Next.js Dashboard | Visual control surface, analytics, manual entry, Dashboard Agent |
+| Google Identity / Firebase Verification Layer | Browser identity acquisition and later server-side token verification |
+| Next.js Dashboard UI | Visual control surface, analytics, manual entry, Dashboard Agent |
+| Next.js Route Handlers | Browser-safe proxy, cookie storage, token refresh, response normalization |
 | Telegram Bot | Primary external conversation channel after secure linking |
 | n8n | Cron, retries, delivery workflows, weekly reports, inactivity checks |
 | Orchestrator Agent | Intent detection, memory retrieval, agent routing, tool calls, confirmation rules |
@@ -61,13 +66,13 @@ Component deep dives:
 ## Key Invariants
 
 1. FastAPI is the source of truth for users, sessions, onboarding, Telegram linking, product state, and AI decisions.
-2. Firebase validates provider identity only.
-3. Telegram users must be linked to authenticated dashboard users before accessing personal data.
-4. The orchestrator is the only entry point for agent coordination.
-5. Sub-agents do not independently send user-facing messages.
-6. AI-generated writes require schema validation, user confirmation, and audit logs.
-7. User data is isolated by `user_id` in PostgreSQL and Qdrant.
-8. Important state changes emit immutable events.
+2. The browser should not call FastAPI directly for sensitive session handling when the Next.js route-handler boundary can own `httpOnly` cookie management.
+3. Google identity verification still belongs server-side even though the browser now obtains the credential.
+4. Telegram users must be linked to authenticated dashboard users before accessing personal data.
+5. The orchestrator is the only entry point for agent coordination.
+6. Sub-agents do not independently send user-facing messages.
+7. AI-generated writes require schema validation, user confirmation, and audit logs.
+8. User data is isolated by `user_id` in PostgreSQL and Qdrant once persistence lands.
 
 ---
 
@@ -104,9 +109,11 @@ backend/
 frontend/
   src/
     app/
+      api/
     components/
     lib/
     stores/
+    types/
     middleware.ts
   tests/
   public/
@@ -120,10 +127,23 @@ frontend/
 - Backend, frontend, and agent architecture docs are split into component plans.
 - System data flows are documented in `diagrams/system-data-flow.md`.
 - Dashboard HTML prototype remains the frontend visual baseline.
-- Frontend application scaffold exists as a route-based Next.js app with protected dashboard routes, local dummy state, manual entry dialogs, and dashboard-agent mock behavior.
-- Backend application scaffold exists as a FastAPI app with settings loading, auth/session helpers, route registration, protected dependencies, workflow secret validation, and agent routing stubs.
-- The current implementation boundary is clear: route and contract scaffolds exist across both surfaces, but persistence and live integrations are still placeholder.
-- The next architecture priority is moving backend contracts from placeholder to real persistence and identity verification without breaking current frontend route boundaries.
+- Frontend application now includes:
+  - route-based screens
+  - protected dashboard routes
+  - official Google sign-in UI
+  - local route handlers for auth and dashboard actions
+  - session-cookie management
+  - backend bootstrap loading
+  - backend-backed agent chat and selected writes
+- Backend application now includes:
+  - settings loading
+  - auth/session helpers
+  - protected dependencies
+  - workflow secret validation
+  - agent routing stubs
+  - in-memory mutation for current-session profile, onboarding, and Telegram flags
+- The current implementation boundary is no longer “no API integration.” It is now “partial backend integration through Next.js server routes, with persistence and real verification still placeholder.”
+- The next architecture priority is replacing dummy verification and in-memory state with real persistence without breaking the current frontend session boundary.
 
 ---
 

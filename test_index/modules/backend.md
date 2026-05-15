@@ -37,8 +37,9 @@ fail 0
 
 ## Known Gaps
 
-- No persistence-backed database tests yet.
-- No real Firebase Admin verification tests yet.
-- No onboarding persistence tests yet.
-- No Telegram linking or webhook-processing tests yet.
-- No integration coverage for Qdrant, Redis, or OpenAI yet.
+- No persistence-backed database tests yet
+- No real Firebase Admin verification tests yet
+- No onboarding persistence tests yet
+- No Telegram linking or webhook-processing tests yet
+- No tests yet for current-session profile, onboarding, or Telegram mutation behavior
+- No integration coverage for Qdrant, Redis, or OpenAI yet

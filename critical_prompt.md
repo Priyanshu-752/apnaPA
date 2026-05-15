@@ -1,7 +1,7 @@
 # apnaPA Project Vision
 
 **Project**: apnaPA AI Personal Manager  
-**Status**: Frontend route scaffold ready, backend scaffold implemented  
+**Status**: Backend scaffold plus first frontend-backend auth and session slice implemented  
 **Source of Truth**: `plan.md`
 
 ---
@@ -26,9 +26,9 @@ Build a multi-user AI platform where FastAPI owns identity, product state, AI or
 
 Both Telegram and the dashboard Agent use the same backend orchestrator, memory retrieval, typed tools, confirmation rules, and user-scoped data.
 
-The current frontend already reflects this at the routing level: auth is separated from protected dashboard screens, and the dashboard surface is split into route-based screens instead of a single-page mock.
+The current frontend already reflects this beyond routing alone: auth is separated from protected dashboard screens, the dashboard surface is split into route-based screens, and the browser now uses Google Identity Services plus local Next.js route handlers to exchange credentials and maintain FastAPI-backed session cookies.
 
-The current backend already reflects this at the scaffold level: FastAPI owns app boot, auth/session helpers, protected dependencies, route registration, agent routing stubs, and workflow webhook contracts.
+The current backend already reflects this at the scaffold-plus-contract level: FastAPI owns app boot, auth/session helpers, protected dependencies, route registration, agent routing stubs, workflow webhook contracts, and the current in-memory session mutations used by profile, onboarding, and Telegram-link placeholders.
 
 ---
 
@@ -64,7 +64,7 @@ The current backend already reflects this at the scaffold level: FastAPI owns ap
 
 ### MVP Scope
 
-- Google auth through Firebase Authentication.
+- Google auth through Firebase Authentication or Google Identity Services on the frontend, with FastAPI-owned app sessions after verification.
 - FastAPI-owned users, sessions, JWT access tokens, refresh tokens, onboarding state, and Telegram linking.
 - Telegram text and voice-note conversation flows.
 - Meal logging with calorie and protein tracking.
